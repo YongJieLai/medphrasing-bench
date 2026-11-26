@@ -14,7 +14,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.cases import CASES
+from src.cases import CASES, load_cases
 from src.phrasing import phrasing_variants
 from src.patient import Patient
 from src.metrics import measure
@@ -23,12 +23,14 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "outputs"
 
 
-def run(case_ids: list[str] | None, repeat: int):
+def run(case_ids: list[str] | None, repeat: int, data: str | None):
     OUT.mkdir(exist_ok=True)
-    out_csv = OUT / "phaseA_phrasing.csv"
+    cases = load_cases(ROOT / data) if data else CASES
+    out_name = f"phaseA_{Path(data).stem if data else 'demo'}.csv"
+    out_csv = OUT / out_name
     rows = []
 
-    for case in CASES:
+    for case in cases:
         if case_ids and case.id not in case_ids:
             continue
         patient = Patient(case)
@@ -74,7 +76,9 @@ def run(case_ids: list[str] | None, repeat: int):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
+    ap.add_argument("--data", type=str, default="data/ddxplus_50.json",
+                    help="病例 JSON 路径（相对仓库根；不传则用内置样例）")
     ap.add_argument("--cases", nargs="*", default=None, help="指定病例 id（默认全部）")
-    ap.add_argument("--repeat", type=int, default=3, help="每个条件重复采样次数")
+    ap.add_argument("--repeat", type=int, default=1, help="每个条件重复采样次数")
     args = ap.parse_args()
-    run(args.cases, args.repeat)
+    run(args.cases, args.repeat, args.data)

@@ -1,0 +1,3556 @@
+[
+  {
+    "id": "ddx-000",
+    "age": 29,
+    "sex": "M",
+    "chief_complaint": "I have trouble keeping my tongue in my mouth.",
+    "diagnosis": "Acute dystonic reactions",
+    "aius": [
+      "Has started or taken antipsychotic medication within the last 7 days",
+      "Regularly takes stimulant drugs",
+      "Has trouble keeping tongue in mouth",
+      "Feels muscle spasms or soreness in neck are preventing turning head to one side",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "Tongue retention difficulty": {
+        "open": "Could you describe how you experience trouble keeping your tongue in your mouth?",
+        "closed": "Do you have difficulty keeping your tongue inside your mouth?",
+        "targets": [
+          "Has trouble keeping tongue in mouth"
+        ]
+      },
+      "Neck muscle limitation": {
+        "open": "Can you tell me more about the muscle spasms or soreness in your neck and how it affects your ability to turn your head?",
+        "closed": "Do you feel that muscle spasms or soreness in your neck are preventing you from turning your head to one side?",
+        "targets": [
+          "Feels muscle spasms or soreness in neck are preventing turning head to one side"
+        ]
+      },
+      "Recent antipsychotic use": {
+        "open": "Could you describe any recent changes in your medication, especially regarding antipsychotics?",
+        "closed": "Have you started or taken antipsychotic medication within the last 7 days?",
+        "targets": [
+          "Has started or taken antipsychotic medication within the last 7 days"
+        ]
+      },
+      "Stimulant drug use": {
+        "open": "Can you tell me about your regular use of stimulant drugs, including what types and how often?",
+        "closed": "Do you regularly take stimulant drugs?",
+        "targets": [
+          "Regularly takes stimulant drugs"
+        ]
+      },
+      "No recent international travel": {
+        "open": "Could you describe your recent travel history, particularly any trips abroad in the past month?",
+        "closed": "Have you traveled out of the country in the last 4 weeks?",
+        "targets": [
+          "No recent travel abroad"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-001",
+    "age": 78,
+    "sex": "M",
+    "chief_complaint": "I have been coughing up blood.",
+    "diagnosis": "Pulmonary neoplasm",
+    "aius": [
+      "Has coughed up blood",
+      "Pain character NA",
+      "No pain location",
+      "Pain intensity 0",
+      "Pain radiates nowhere",
+      "Pain location precision 0",
+      "Pain onset speed 0",
+      "Has shortness of breath",
+      "Smokes cigarettes",
+      "Has loss of appetite",
+      "Has involuntary weight loss",
+      "Has cough",
+      "No recent travel abroad",
+      "Exposed to secondhand smoke daily",
+      "Has family history of lung cancer"
+    ],
+    "info_points": {
+      "coughed_up_blood": {
+        "open": "Could you describe any instances where you've coughed up blood, including how much and what it looked like?",
+        "closed": "Have you coughed up blood recently?",
+        "targets": [
+          "AIU: \"Has coughed up blood\""
+        ]
+      },
+      "pain_character_na": {
+        "open": "Can you describe the nature of your pain in your own words?",
+        "closed": "Is the pain sharp, dull, throbbing, or burning?",
+        "targets": [
+          "AIU: \"Pain character NA\""
+        ]
+      },
+      "no_pain_location": {
+        "open": "Can you tell me about any areas of discomfort or pain you're experiencing?",
+        "closed": "Do you feel pain in any specific part of your body?",
+        "targets": [
+          "AIU: \"No pain location\""
+        ]
+      },
+      "pain_intensity_0": {
+        "open": "How would you rate the severity of your pain on a scale from 0 to 10?",
+        "closed": "Is your pain intensity zero?",
+        "targets": [
+          "AIU: \"Pain intensity 0\""
+        ]
+      },
+      "pain_radiates_nowhere": {
+        "open": "Has the pain spread or moved to other parts of your body?",
+        "closed": "Does the pain radiate to another area?",
+        "targets": [
+          "AIU: \"Pain radiates nowhere\""
+        ]
+      },
+      "pain_location_precision_0": {
+        "open": "Can you describe exactly where the pain is located, or if it's hard to pinpoint?",
+        "closed": "Is the pain localized to a specific spot?",
+        "targets": [
+          "AIU: \"Pain location precision 0\""
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-002",
+    "age": 15,
+    "sex": "F",
+    "chief_complaint": "I've been feeling fatigued with widespread muscle aches and a general sense of unwellness.",
+    "diagnosis": "Myocarditis",
+    "aius": [
+      "Has recent viral infection",
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Pain is a knife stroke",
+      "Feels pain in lower chest",
+      "Feels pain on side of the chest(R)",
+      "Feels pain in upper chest",
+      "Feels pain in breast(L)",
+      "Pain intensity 4",
+      "No pain radiating to another location",
+      "Pain location precision 7",
+      "Pain onset speed 5",
+      "Has shortness of breath or difficulty breathing",
+      "Has palpitations or racing heart",
+      "Has new fatigue, generalized discomfort, diffuse muscle aches, or change in general well-being",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "Pain related to consultation": {
+        "open": "Could you tell me more about any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "Pain sensitivity": {
+        "open": "Can you describe how sensitive or sharp the pain feels, and does anything make it worse?",
+        "closed": "Is the pain sensitive to touch or pressure?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "Knife-like pain": {
+        "open": "How would you describe the quality of the pain? Is it sharp, stabbing, or like a knife cut?",
+        "closed": "Does the pain feel like a knife stroke?",
+        "targets": [
+          "Pain is a knife stroke"
+        ]
+      },
+      "Lower chest pain": {
+        "open": "Can you describe where exactly in your chest you're feeling the pain and what it's like?",
+        "closed": "Do you feel pain in the lower part of your chest?",
+        "targets": [
+          "Feels pain in lower chest"
+        ]
+      },
+      "Right side chest pain": {
+        "open": "Could you point to where on your chest you're feeling the pain, and is it on one side more than the other?",
+        "closed": "Do you feel pain on the right side of your chest?",
+        "targets": [
+          "Feels pain on side of the chest(R)"
+        ]
+      },
+      "Upper chest pain": {
+        "open": "Can you describe the location of the pain in your chest—does it feel more toward the top?",
+        "closed": "Do you feel pain in the upper part of your chest?",
+        "targets": [
+          "Feels pain in upper chest"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-003",
+    "age": 32,
+    "sex": "M",
+    "chief_complaint": "I have pain in the forehead and side of the neck, along with increased sweating, a pink rash on my forehead, and itching.",
+    "diagnosis": "Influenza",
+    "aius": [
+      "Has significantly increased sweating",
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Feels pain in back of head",
+      "Feels pain on side of neck right",
+      "Feels pain on side of neck left",
+      "Feels pain in forehead",
+      "Feels pain in occiput",
+      "Pain intensity 3",
+      "No pain radiation to another location",
+      "Pain location precision 3",
+      "Pain onset speed 3",
+      "Smokes cigarettes",
+      "Has skin lesions, redness, or problems related to condition",
+      "Rash color is pink",
+      "Lesions do not peel off",
+      "Rash is swollen",
+      "Affected region located on side of neck left",
+      "Affected region located in forehead",
+      "Pain intensity from rash 3",
+      "Lesion(s) larger than 1cm",
+      "Itching severity 5",
+      "Has diffuse muscle pain",
+      "Has loss of appetite or feels full more quickly",
+      "Has nasal congestion or clear runny nose",
+      "Has cough",
+      "No recent travel abroad",
+      "Is immunosuppressed"
+    ],
+    "info_points": {
+      "Increased Sweating": {
+        "open": "Could you tell me more about your sweating? Has it changed recently, and in what situations does it happen?",
+        "closed": "Has your sweating significantly increased compared to before?",
+        "targets": [
+          "Has significantly increased sweating"
+        ]
+      },
+      "Pain Related to Consultation": {
+        "open": "Can you describe the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to the reason you're here for consultation?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "Pain Sensitivity": {
+        "open": "Can you describe how sensitive your pain feels? Does touching or moving the area make it worse?",
+        "closed": "Is your pain sensitive to touch or pressure?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "Back of Head Pain": {
+        "open": "Can you describe where exactly in the back of your head you're feeling pain? Is it constant or does it come and go?",
+        "closed": "Are you feeling pain specifically at the back of your head?",
+        "targets": [
+          "Feels pain in back of head"
+        ]
+      },
+      "Right Side Neck Pain": {
+        "open": "Could you describe the pain on the right side of your neck? Is it sharp, dull, or throbbing?",
+        "closed": "Do you feel pain on the right side of your neck?",
+        "targets": [
+          "Feels pain on side of neck right"
+        ]
+      },
+      "Left Side Neck Pain": {
+        "open": "Can you tell me more about the pain on the left side of your neck? Does it radiate anywhere?",
+        "closed": "Do you feel pain on the left side of your neck?",
+        "targets": [
+          "Feels pain on side of neck left"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-004",
+    "age": 49,
+    "sex": "M",
+    "chief_complaint": "I have recently had black stools like coal.",
+    "diagnosis": "Anemia",
+    "aius": [
+      "Has poor diet",
+      "Has history of anemia diagnosis",
+      "Has family member with anemia diagnosis",
+      "Has pain related to reason for consulting",
+      "Pain is a cramp",
+      "Pain is in forehead",
+      "Pain is in temple(R)",
+      "Pain intensity 4",
+      "No pain radiation",
+      "Pain location precision 2",
+      "Pain onset speed 5",
+      "Feels lightheaded and dizzy or feels like fainting",
+      "Feels too tired to do usual activities or is stuck in bed all day",
+      "Has chronic kidney failure",
+      "Has recently had black stools (like coal)",
+      "Is taking new oral anticoagulants (NOACs)",
+      "Skin is much paler than usual",
+      "No recent travel abroad",
+      "Has BMI less than 18.5 or is underweight"
+    ],
+    "info_points": {
+      "pain_location": {
+        "open": "Can you describe where in your temple you're feeling the pain?",
+        "closed": "Is the pain specifically in your right temple?",
+        "targets": [
+          "AIU: \"Pain is in temple(R)\""
+        ]
+      },
+      "pain_character": {
+        "open": "How would you describe the quality of your pain? For example, is it sharp, dull, throbbing, or cramp-like?",
+        "closed": "Is your pain described as a cramp?",
+        "targets": [
+          "AIU: \"Pain is a cramp\""
+        ]
+      },
+      "pain_intensity": {
+        "open": "Can you describe how severe the pain feels on a scale from 0 to 10?",
+        "closed": "Is your pain intensity a 4 out of 10?",
+        "targets": [
+          "AIU: \"Pain intensity 4\""
+        ]
+      },
+      "pain_radiation": {
+        "open": "Has the pain spread to any other areas of your body?",
+        "closed": "Does the pain radiate to another location?",
+        "targets": [
+          "AIU: \"No pain radiation\""
+        ]
+      },
+      "pain_associated": {
+        "open": "Could you describe any pain you're experiencing that might be related to why you came in today?",
+        "closed": "Do you have pain related to your reason for consulting?",
+        "targets": [
+          "AIU: \"Has pain related to reason for consulting\""
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-005",
+    "age": 16,
+    "sex": "M",
+    "chief_complaint": "I have palpitations, sharp pain in the upper chest that feels like a knife stroke, radiating to my back and breast, with increased severity when lying down.",
+    "diagnosis": "Pericarditis",
+    "aius": [
+      "Has recent viral infection",
+      "Has history of pericarditis",
+      "Has pain related to reason for consulting",
+      "Pain is knife stroke",
+      "Pain is sharp",
+      "Pain is in lower chest",
+      "Pain is in upper chest",
+      "Pain is in breast(R)",
+      "Pain is in breast(L)",
+      "Pain is in epigastric",
+      "Pain intensity 7",
+      "Pain radiates to thoracic spine",
+      "Pain radiates to posterior chest wall(R)",
+      "Pain radiates to posterior chest wall(L)",
+      "Pain location precision 8",
+      "Pain onset speed 8",
+      "Has palpitations",
+      "No recent travel abroad",
+      "Symptoms worse when lying down and alleviated while sitting up"
+    ],
+    "info_points": {
+      "pain_related_to_consulting": {
+        "open": "Could you tell me more about any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "pain_character_knife_stroke": {
+        "open": "Can you describe the quality of the pain—does it feel like a sharp, stabbing sensation, like a knife cutting through?",
+        "closed": "Does your pain feel like a knife stroke?",
+        "targets": [
+          "Pain is knife stroke"
+        ]
+      },
+      "pain_character_sharp": {
+        "open": "How would you describe the nature of your pain? Is it sharp, dull, throbbing, or something else?",
+        "closed": "Is your pain sharp?",
+        "targets": [
+          "Pain is sharp"
+        ]
+      },
+      "pain_location_lower_chest": {
+        "open": "Where exactly do you feel the pain? Can you point to the area or describe its location in more detail?",
+        "closed": "Is the pain located in your lower chest?",
+        "targets": [
+          "Pain is in lower chest"
+        ]
+      },
+      "pain_location_upper_chest": {
+        "open": "Can you describe where in your chest the pain is felt—upper, middle, or lower part?",
+        "closed": "Is the pain located in your upper chest?",
+        "targets": [
+          "Pain is in upper chest"
+        ]
+      },
+      "pain_location_breast_right": {
+        "open": "Could you specify which breast is affected and whether the pain is localized to one side?",
+        "closed": "Is the pain located in your right breast?",
+        "targets": [
+          "Pain is in breast(R)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-006",
+    "age": 25,
+    "sex": "M",
+    "chief_complaint": "I have lost my sense of smell.",
+    "diagnosis": "Chronic rhinosinusitis",
+    "aius": [
+      "Has pain related to reason for consulting",
+      "Pain is sharp",
+      "Pain is in forehead",
+      "Pain is in cheek(R)",
+      "Pain is in nose",
+      "Pain is in eye(R)",
+      "Pain is in temple(R)",
+      "Pain intensity 4",
+      "Pain radiates to back of head",
+      "Pain radiates to nose",
+      "Pain radiates to temple(R)",
+      "Pain location precision 3",
+      "Pain onset speed 4",
+      "Smokes cigarettes",
+      "Lost sense of smell",
+      "Had pneumonia",
+      "Has nasal polyps",
+      "Diagnosed with gastroesophageal reflux",
+      "Has nasal congestion or clear runny nose",
+      "Has cough",
+      "No recent travel abroad",
+      "More likely to develop common allergies than the general population"
+    ],
+    "info_points": {
+      "pain_location_forehead": {
+        "open": "Could you describe where exactly in your forehead you're feeling the pain?",
+        "closed": "Is the pain specifically located in your forehead?",
+        "targets": [
+          "AIU: \"Pain is in forehead\"  |  original clinical question: \"Do you feel pain somewhere?\""
+        ]
+      },
+      "pain_location_cheek_right": {
+        "open": "Can you tell me more about the pain in your right cheek? Is it constant or does it come and go?",
+        "closed": "Is the pain located in your right cheek?",
+        "targets": [
+          "AIU: \"Pain is in cheek(R)\"  |  original clinical question: \"Do you feel pain somewhere?\""
+        ]
+      },
+      "pain_location_nose": {
+        "open": "Could you describe the pain you're feeling in your nose? Does it radiate to other areas?",
+        "closed": "Is the pain located in your nose?",
+        "targets": [
+          "AIU: \"Pain is in nose\"  |  original clinical question: \"Do you feel pain somewhere?\""
+        ]
+      },
+      "pain_location_eye_right": {
+        "open": "Can you describe the pain in your right eye? Is it sharp, dull, or throbbing?",
+        "closed": "Is the pain located in your right eye?",
+        "targets": [
+          "AIU: \"Pain is in eye(R)\"  |  original clinical question: \"Do you feel pain somewhere?\""
+        ]
+      },
+      "pain_character_sharp": {
+        "open": "Can you describe the quality of your pain? For example, is it sharp, dull, burning, or throbbing?",
+        "closed": "Is your pain sharp?",
+        "targets": [
+          "AIU: \"Pain is sharp\"  |  original clinical question: \"Characterize your pain:\""
+        ]
+      },
+      "pain_related_to_consultation": {
+        "open": "Could you tell me more about the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain related to your reason for consulting?",
+        "targets": [
+          "AIU: \"Has pain related to reason for consulting\"  |  original clinical question: \"Do you have pain somewhere, related to your reason for consulting?\""
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-007",
+    "age": 28,
+    "sex": "M",
+    "chief_complaint": "I have skin lesions, redness, and problems on my skin that I believe are related to the condition I am consulting for.",
+    "diagnosis": "Inguinal hernia",
+    "aius": [
+      "Has abdominal bloating",
+      "Has pain related to reason for consulting",
+      "Pain is heavy",
+      "Pain is in iliac fossa(L)",
+      "Pain is in hip(R)",
+      "Pain is in hip(L)",
+      "Pain is in testicle(R)",
+      "Pain is in testicle(L)",
+      "Pain intensity 6",
+      "No pain radiation",
+      "Pain location precision 3",
+      "Pain onset speed 4",
+      "Has skin lesions, redness, or problems related to condition",
+      "Rash color is pale",
+      "Lesions do not peel off",
+      "Rash is swollen 2",
+      "Affected region is in iliac fossa(L)",
+      "Rash pain intensity 4",
+      "Lesion(s) are larger than 1cm",
+      "Itching severity 0",
+      "Was born prematurely or had birth complications",
+      "No recent travel abroad",
+      "Symptoms or pain increased with coughing, lifting, or straining"
+    ],
+    "info_points": {
+      "abdominal_bloating": {
+        "open": "Could you describe what you mean by abdominal bloating? How does it feel, and does it come and go?",
+        "closed": "Have you noticed your abdomen feeling swollen or distended recently?",
+        "targets": [
+          "Has abdominal bloating"
+        ]
+      },
+      "pain_related_to_consultation": {
+        "open": "Can you tell me more about the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling connected to the reason you came to see me?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "pain_character_heavy": {
+        "open": "Can you describe the quality of your pain? What does 'heavy' mean to you in this context?",
+        "closed": "Is your pain described as heavy or pressing?",
+        "targets": [
+          "Pain is heavy"
+        ]
+      },
+      "pain_location_iliac_fossa_left": {
+        "open": "Could you point to where exactly you feel the pain in your lower abdomen on the left side?",
+        "closed": "Do you feel pain specifically in the left iliac fossa?",
+        "targets": [
+          "Pain is in iliac fossa(L)"
+        ]
+      },
+      "pain_location_hip_right": {
+        "open": "Can you describe the location and any movement or activity that affects the pain in your right hip?",
+        "closed": "Is the pain located in your right hip?",
+        "targets": [
+          "Pain is in hip(R)"
+        ]
+      },
+      "pain_location_hip_left": {
+        "open": "Where exactly do you feel the pain in your left hip? Does it radiate or change with certain movements?",
+        "closed": "Is the pain located in your left hip?",
+        "targets": [
+          "Pain is in hip(L)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-008",
+    "age": 96,
+    "sex": "F",
+    "chief_complaint": "I have a fever.",
+    "diagnosis": "Influenza",
+    "aius": [
+      "Has increased sweating",
+      "Has pain related to reason for consulting",
+      "Pain is exhausting",
+      "Pain is in back of head",
+      "Pain is on side of neck (R)",
+      "Pain is on side of the neck (L)",
+      "Pain is on top of the head",
+      "Pain is in occiput",
+      "Pain intensity 4",
+      "Pain does not radiate to another location",
+      "Pain location is precise at level 6",
+      "Pain appeared moderately fast at level 4",
+      "Feels so tired that unable to do usual activities or stuck in bed all day long",
+      "Has fever",
+      "Has chills or shivers",
+      "Has sore throat",
+      "Has skin lesions, redness, or problems related to condition",
+      "Rash color is pink",
+      "Lesions do not peel off",
+      "Rash is swollen at level 5",
+      "Affected region is on side of neck (R)",
+      "Affected region is on forehead",
+      "Pain caused by rash is intense at level 6",
+      "Lesion(s) are larger than 1cm",
+      "Itching severity is 1",
+      "Has nasal congestion or clear runny nose",
+      "Has cough",
+      "No recent travel abroad",
+      "Is immunosuppressed"
+    ],
+    "info_points": {
+      "sweating_increase": {
+        "open": "Could you tell me more about your sweating? Has it changed recently, and if so, how?",
+        "closed": "Have you noticed a significant increase in your sweating compared to before?",
+        "targets": [
+          "AIU: \"Has increased sweating\""
+        ]
+      },
+      "pain_related_to_consult": {
+        "open": "Can you describe the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling connected to the reason you're here for consultation?",
+        "targets": [
+          "AIU: \"Has pain related to reason for consulting\""
+        ]
+      },
+      "pain_exhausting": {
+        "open": "How would you describe the impact of your pain on your energy levels or daily functioning?",
+        "closed": "Does your pain make you feel exhausted or drained?",
+        "targets": [
+          "AIU: \"Pain is exhausting\""
+        ]
+      },
+      "pain_back_of_head": {
+        "open": "Can you describe where exactly in your head you're feeling the pain? Is it at the back?",
+        "closed": "Is the pain located at the back of your head?",
+        "targets": [
+          "AIU: \"Pain is in back of head\""
+        ]
+      },
+      "pain_side_neck_right": {
+        "open": "Could you point to where on your neck you're feeling the pain? Is it specifically on the right side?",
+        "closed": "Is the pain located on the right side of your neck?",
+        "targets": [
+          "AIU: \"Pain is on side of neck (R)\""
+        ]
+      },
+      "pain_side_neck_left": {
+        "open": "Can you describe the location of the pain on your neck? Is it on the left side?",
+        "closed": "Is the pain located on the left side of your neck?",
+        "targets": [
+          "AIU: \"Pain is on side of the neck (L)\""
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-009",
+    "age": 45,
+    "sex": "F",
+    "chief_complaint": "I have a fever.",
+    "diagnosis": "Influenza",
+    "aius": [
+      "Has increased sweating",
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Pain is heavy",
+      "Pain is exhausting",
+      "Pain is in back of head",
+      "Pain is in back of the neck",
+      "Pain is in occiput",
+      "Pain is in temple(R)",
+      "Pain intensity 5",
+      "No pain radiation to another location",
+      "Pain location precision 2",
+      "Pain onset speed 0",
+      "Smokes cigarettes",
+      "Feels so tired that unable to do usual activities or stuck in bed all day long",
+      "Has fever",
+      "Has sore throat",
+      "Has skin lesions, redness, or problems related to condition",
+      "Rash color is pink",
+      "Lesions do not peel off",
+      "Rash is swollen",
+      "Affected region is on side of the neck(L)",
+      "Pain intensity from rash is 4",
+      "Lesion(s) are larger than 1cm",
+      "Itching severity is 1",
+      "Has loss of appetite or feels full more quickly than usual",
+      "Has nasal congestion or clear runny nose",
+      "Has cough",
+      "No recent travel abroad",
+      "Is immunosuppressed"
+    ],
+    "info_points": {
+      "increased_sweating": {
+        "open": "Could you tell me more about any changes you've noticed in your sweating lately?",
+        "closed": "Have you had significantly increased sweating?",
+        "targets": [
+          "Has increased sweating"
+        ]
+      },
+      "pain_related_to_consulting": {
+        "open": "Can you describe any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Do you have pain somewhere, related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "pain_sensitive": {
+        "open": "How would you describe the quality of your pain? Is it sharp, tender, or sensitive to touch?",
+        "closed": "Is your pain sensitive?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "pain_heavy": {
+        "open": "Can you describe the sensation of your pain? Does it feel heavy, pressing, or like a weight on you?",
+        "closed": "Is your pain heavy?",
+        "targets": [
+          "Pain is heavy"
+        ]
+      },
+      "pain_exhausting": {
+        "open": "How does the pain affect your energy levels? Does it leave you feeling drained or exhausted?",
+        "closed": "Is your pain exhausting?",
+        "targets": [
+          "Pain is exhausting"
+        ]
+      },
+      "pain_in_back_of_head": {
+        "open": "Could you point to exactly where you feel the pain in your head? Is it mainly at the back of your head?",
+        "closed": "Do you feel pain at the back of your head?",
+        "targets": [
+          "Pain is in back of head"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-010",
+    "age": 19,
+    "sex": "M",
+    "chief_complaint": "I have been in contact with or ate something that triggers my allergy.",
+    "diagnosis": "Anaphylaxis",
+    "aius": [
+      "Has known severe food allergy",
+      "Has been in contact with or ate something that triggers allergy",
+      "Has diarrhea or increased stool frequency",
+      "Has pain related to reason for consulting",
+      "Pain is like a knife stroke",
+      "Pain is like a cramp",
+      "Feels pain in flank(R)",
+      "Feels pain in iliac fossa(L)",
+      "Feels pain in hypochondrium(L)",
+      "Feels pain in pubis",
+      "Feels pain in epigastric",
+      "Pain intensity 5",
+      "Pain does not radiate to another location",
+      "Pain is precisely located at 6",
+      "Pain appeared rapidly at 6",
+      "Feels lightheaded and dizzy or feels like fainting",
+      "Has skin lesions, redness, or problems related to condition",
+      "Rash color is pink",
+      "Lesions do not peel off",
+      "Rash is swollen 2",
+      "Affected region is in biceps(R)",
+      "Affected region is in biceps(L)",
+      "Affected region is in mouth",
+      "Affected region is in thyroid cartilage",
+      "Affected region is in ankle(R)",
+      "Pain caused by rash intensity 3",
+      "Lesion(s) are larger than 1cm",
+      "Itching severity 10",
+      "Feels nauseous or feels like vomiting",
+      "Has swelling in one or more areas of body",
+      "Swelling is located in forehead",
+      "Swelling is located in cheek(L)",
+      "Lost consciousness",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "Allergy Exposure": {
+        "open": "Could you tell me about any recent exposures or foods you've eaten that might have triggered an allergic reaction?",
+        "closed": "Have you been in contact with or eaten anything that you know causes an allergic reaction?",
+        "targets": [
+          "Has been in contact with or ate something that triggers allergy"
+        ]
+      },
+      "Diarrhea Frequency": {
+        "open": "Can you describe your bowel movements lately—have they been looser or more frequent than usual?",
+        "closed": "Have you had diarrhea or an increase in stool frequency?",
+        "targets": [
+          "Has diarrhea or increased stool frequency"
+        ]
+      },
+      "Pain Related to Consultation": {
+        "open": "Can you describe any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Do you have pain somewhere that is related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "Knife-like Pain": {
+        "open": "Can you describe the quality of your pain—does it feel sharp, like a knife cutting through?",
+        "closed": "Does your pain feel like a knife stroke?",
+        "targets": [
+          "Pain is like a knife stroke"
+        ]
+      },
+      "Cramp-like Pain": {
+        "open": "How would you describe the sensation of your pain—does it feel like a cramp or muscle spasm?",
+        "closed": "Does your pain feel like a cramp?",
+        "targets": [
+          "Pain is like a cramp"
+        ]
+      },
+      "Flank Pain Right": {
+        "open": "Can you point to where you're feeling pain and describe if it's on the right side, especially in the flank area?",
+        "closed": "Do you feel pain in the right flank?",
+        "targets": [
+          "Feels pain in flank(R)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-011",
+    "age": 38,
+    "sex": "F",
+    "chief_complaint": "I have a sharp, sensitive pain in my left ear that started moderately quickly and is rated a 3 in intensity.",
+    "diagnosis": "Acute otitis media",
+    "aius": [
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Pain is sharp",
+      "Pain is in ear(L)",
+      "Pain intensity 3",
+      "No pain radiation",
+      "Pain location precision 8",
+      "Pain onset speed 3",
+      "Is more irritable or has unstable mood",
+      "Has nasal congestion or clear runny nose",
+      "Has cough",
+      "No recent travel abroad",
+      "Vaccinations are up to date"
+    ],
+    "info_points": {
+      "pain_location": {
+        "open": "Could you tell me more about where exactly you're feeling the pain?",
+        "closed": "Is the pain located in your ear on the left side?",
+        "targets": [
+          "Pain is in ear(L)"
+        ]
+      },
+      "pain_character": {
+        "open": "Can you describe the quality of the pain you're experiencing?",
+        "closed": "Is the pain sharp?",
+        "targets": [
+          "Pain is sharp"
+        ]
+      },
+      "pain_sensitivity": {
+        "open": "How does the pain respond to touch or pressure?",
+        "closed": "Is the pain sensitive to touch?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "pain_intensity": {
+        "open": "Can you describe how severe the pain feels on a scale from 0 to 10?",
+        "closed": "Is the pain intensity rated at 3 out of 10?",
+        "targets": [
+          "Pain intensity 3"
+        ]
+      },
+      "pain_radiation": {
+        "open": "Does the pain spread or travel to any other part of your body?",
+        "closed": "Does the pain radiate to another location?",
+        "targets": [
+          "No pain radiation"
+        ]
+      },
+      "pain_related_to_consulting": {
+        "open": "Could you describe the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-012",
+    "age": 62,
+    "sex": "F",
+    "chief_complaint": "My symptoms and pain get worse when I cough, lift something heavy, or strain during a bowel movement.",
+    "diagnosis": "Inguinal hernia",
+    "aius": [
+      "Has abdominal bloating",
+      "Has pain related to reason for consulting",
+      "Pain is heavy",
+      "Pain is in iliac fossa(R)",
+      "Pain is in hip(R)",
+      "Pain is in testicle(R)",
+      "Pain is in testicle(L)",
+      "Pain intensity 3",
+      "Pain does not radiate to another location",
+      "Pain is located precisely at 2",
+      "Pain appeared quickly, in 6",
+      "Is significantly overweight",
+      "Has skin lesions, redness or problems related to condition",
+      "Rash color is pale",
+      "Lesions do not peel off",
+      "Rash is swollen",
+      "Affected region is in iliac fossa(L)",
+      "Pain caused by rash intensity 6",
+      "Lesion(s) are larger than 1cm",
+      "Itching severity 0",
+      "Has passed stools or gas since symptoms increased",
+      "Was not born prematurely and had no birth complications",
+      "Has intense coughing fits",
+      "No recent travel abroad",
+      "Symptoms or pain are increased with coughing, lifting, or bowel movement"
+    ],
+    "info_points": {
+      "Abdominal Bloating": {
+        "open": "Could you describe the sensation of bloating in your abdomen? Where exactly do you feel it, and does it come and go?",
+        "closed": "Do you feel your abdomen is distended or swollen due to internal pressure?",
+        "targets": [
+          "Has abdominal bloating"
+        ]
+      },
+      "Pain Related to Consultation": {
+        "open": "Can you tell me more about the pain you're experiencing and how it relates to why you came to see me?",
+        "closed": "Is the pain you're feeling related to your reason for consulting today?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "Heavy Pain": {
+        "open": "How would you describe the quality of your pain? Is it heavy, dull, pressing, or something else?",
+        "closed": "Is your pain characterized as heavy?",
+        "targets": [
+          "Pain is heavy"
+        ]
+      },
+      "Pain in Right Iliac Fossa": {
+        "open": "Can you describe where exactly you feel the pain in your lower right abdomen? Does it radiate or change with movement?",
+        "closed": "Is your pain located in the right iliac fossa?",
+        "targets": [
+          "Pain is in iliac fossa(R)"
+        ]
+      },
+      "Pain in Right Hip": {
+        "open": "Could you point to the exact area where you're feeling pain in your right hip? Does it worsen with certain movements?",
+        "closed": "Is your pain located in the right hip?",
+        "targets": [
+          "Pain is in hip(R)"
+        ]
+      },
+      "Pain in Right Testicle": {
+        "open": "Can you describe the pain in your right testicle? Is it sharp, dull, constant, or intermittent?",
+        "closed": "Is your pain located in the right testicle?",
+        "targets": [
+          "Pain is in testicle(R)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-013",
+    "age": 39,
+    "sex": "M",
+    "chief_complaint": "I have been feeling fatigued and having non-restful sleep.",
+    "diagnosis": "Pulmonary neoplasm",
+    "aius": [
+      "Has hemoptysis",
+      "Pain character NA",
+      "No pain location",
+      "Pain intensity 0",
+      "Pain does not radiate",
+      "Pain location precision 0",
+      "Pain onset speed 0",
+      "Has shortness of breath",
+      "Smokes cigarettes",
+      "Feels fatigued or has non-restful sleep",
+      "Has involuntary weight loss",
+      "Is a former smoker",
+      "No recent travel abroad",
+      "Exposed to secondhand smoke daily",
+      "Has family history of lung cancer"
+    ],
+    "info_points": {
+      "hemoptysis_present": {
+        "open": "Could you tell me more about any coughing up of blood you've experienced?",
+        "closed": "Have you been coughing up blood?",
+        "targets": [
+          "AIU: \"Has hemoptysis\""
+        ]
+      },
+      "pain_character_unknown": {
+        "open": "Can you describe the nature of your pain in more detail?",
+        "closed": "Is the character of your pain described as sharp, dull, etc.?",
+        "targets": [
+          "AIU: \"Pain character NA\""
+        ]
+      },
+      "no_pain_location": {
+        "open": "Can you describe where you might be feeling pain, if anywhere?",
+        "closed": "Do you feel pain in any specific location?",
+        "targets": [
+          "AIU: \"No pain location\""
+        ]
+      },
+      "pain_intensity_zero": {
+        "open": "How would you rate the intensity of your pain on a scale from 0 to 10?",
+        "closed": "Is your pain intensity zero?",
+        "targets": [
+          "AIU: \"Pain intensity 0\""
+        ]
+      },
+      "pain_does_not_radiate": {
+        "open": "Can you describe whether the pain spreads or moves to other parts of your body?",
+        "closed": "Does the pain radiate to another area?",
+        "targets": [
+          "AIU: \"Pain does not radiate\""
+        ]
+      },
+      "pain_location_precision_zero": {
+        "open": "How precisely can you localize the pain—can you point to an exact spot?",
+        "closed": "Is the pain location precisely identified?",
+        "targets": [
+          "AIU: \"Pain location precision 0\""
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-014",
+    "age": 40,
+    "sex": "F",
+    "chief_complaint": "I have excessive tearing in my eyes.",
+    "diagnosis": "Cluster headache",
+    "aius": [
+      "Has pain related to reason for consulting",
+      "Pain is haunting",
+      "Pain is a knife stroke",
+      "Pain is tugging",
+      "Pain is sharp",
+      "Pain in forehead",
+      "Pain in cheek(R)",
+      "Pain in cheek(L)",
+      "Pain in eye(R)",
+      "Pain in eye(L)",
+      "Pain intensity 9",
+      "No pain radiating to another location",
+      "Pain location precision 6",
+      "Pain onset speed 7",
+      "Has excessive alcohol use or alcohol addiction",
+      "Has excessive tear production",
+      "Has nasal congestion or clear runny nose",
+      "Takes medication that dilates blood vessels",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "pain_related_to_consult": {
+        "open": "Could you tell me more about any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "pain_haunting": {
+        "open": "Can you describe how the pain feels—does it feel persistent, lingering, or like it's always there?",
+        "closed": "Does your pain feel haunting or constant?",
+        "targets": [
+          "Pain is haunting"
+        ]
+      },
+      "pain_knife_stroke": {
+        "open": "How would you describe the quality of your pain—does it feel like a sudden sharp stab, like a knife cutting through?",
+        "closed": "Does your pain feel like a knife stroke?",
+        "targets": [
+          "Pain is a knife stroke"
+        ]
+      },
+      "pain_tugging": {
+        "open": "Can you describe the sensation of your pain—does it feel like something is pulling or tugging?",
+        "closed": "Does your pain feel like a tugging sensation?",
+        "targets": [
+          "Pain is tugging"
+        ]
+      },
+      "pain_sharp": {
+        "open": "How would you characterize the nature of your pain—does it feel sharp, stabbing, or intense?",
+        "closed": "Is your pain sharp?",
+        "targets": [
+          "Pain is sharp"
+        ]
+      },
+      "pain_forehead": {
+        "open": "Can you describe where exactly you're feeling the pain—specifically, is it located in your forehead?",
+        "closed": "Is your pain located in your forehead?",
+        "targets": [
+          "Pain in forehead"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-015",
+    "age": 9,
+    "sex": "F",
+    "chief_complaint": "I have a cough.",
+    "diagnosis": "Bronchitis",
+    "aius": [
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Feels pain in lower chest",
+      "Feels pain in breast(R)",
+      "Feels pain in breast(L)",
+      "Feels pain in posterior chest wall(R)",
+      "Pain intensity 5",
+      "No pain radiates to another location",
+      "Pain location precision 7",
+      "Pain appeared gradually over 5",
+      "Has shortness of breath or difficulty breathing in a significant way",
+      "Has chronic obstructive pulmonary disease (COPD)",
+      "Has nasal congestion or a clear runny nose",
+      "Has cough",
+      "No recent travel abroad",
+      "Vaccinations are up to date",
+      "Has wheezing sound when exhaling",
+      "Symptoms are more prominent at night"
+    ],
+    "info_points": {
+      "pain_location": {
+        "open": "Can you describe where on your back or side you're feeling the pain?",
+        "closed": "Is the pain located in your right posterior chest wall?",
+        "targets": [
+          "Feels pain in posterior chest wall(R)"
+        ]
+      },
+      "pain_character": {
+        "open": "How would you describe the quality of your pain? Is it sharp, dull, burning, or something else?",
+        "closed": "Is your pain sensitive to touch?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "pain_related_to_consultation": {
+        "open": "Can you explain how the pain relates to why you came in today?",
+        "closed": "Is the pain related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-016",
+    "age": 3,
+    "sex": "F",
+    "chief_complaint": "I constantly feel fatigued and have non-restful sleep.",
+    "diagnosis": "Anemia",
+    "aius": [
+      "Has family history of anemia",
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Pain is tugging",
+      "Pain is a cramp",
+      "Pain is exhausting",
+      "Pain is in back of head",
+      "Pain is in top of the head",
+      "Pain intensity 2",
+      "Pain does not radiate to another location",
+      "Pain location precision 2",
+      "Pain appearance speed 2",
+      "Has shortness of breath or difficulty breathing",
+      "Has lightheadedness and dizziness or feels like fainting",
+      "Is too tired to do usual activities or is stuck in bed all day",
+      "Constantly feels fatigued or has non-restful sleep",
+      "Has chronic kidney failure",
+      "Has recently had black stools",
+      "Is taking new oral anticoagulants (NOACs)",
+      "Skin is much paler than usual",
+      "Is pregnant or thinks she is pregnant",
+      "Has noticed light red blood or blood clots in stool",
+      "Traveled to South Africa in last 4 weeks",
+      "BMI is less than 18.5 or is underweight"
+    ],
+    "info_points": {
+      "pain_location": {
+        "open": "Could you tell me more about where exactly you're feeling the pain?",
+        "closed": "Is the pain located in the back of your head?",
+        "targets": [
+          "Pain is in back of head"
+        ]
+      },
+      "pain_quality_tugging": {
+        "open": "Can you describe the sensation of the pain? What does it feel like?",
+        "closed": "Does the pain feel like a tugging sensation?",
+        "targets": [
+          "Pain is tugging"
+        ]
+      },
+      "pain_quality_cramp": {
+        "open": "How would you describe the quality of your pain? Is it similar to a muscle cramp?",
+        "closed": "Does the pain feel like a cramp?",
+        "targets": [
+          "Pain is a cramp"
+        ]
+      },
+      "pain_quality_exhausting": {
+        "open": "How does the pain affect you overall? Does it make you feel drained or exhausted?",
+        "closed": "Does the pain make you feel exhausted?",
+        "targets": [
+          "Pain is exhausting"
+        ]
+      },
+      "pain_sensitivity": {
+        "open": "Does the pain become worse when you touch or move the area?",
+        "closed": "Is the pain sensitive to touch?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "pain_related_to_consultation": {
+        "open": "Could you describe the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-017",
+    "age": 21,
+    "sex": "M",
+    "chief_complaint": "I have double vision.",
+    "diagnosis": "Myasthenia gravis",
+    "aius": [
+      "Has family history of myasthenia gravis",
+      "Has jaw pain or weakness",
+      "Has double vision",
+      "Has difficulty articulating words",
+      "Has difficulty swallowing or feeling of discomfort/blockage when swallowing",
+      "Has shortness of breath or difficulty breathing",
+      "Has difficulty opening or raising one or both eyelids",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "jaw_pain_weakness": {
+        "open": "Could you describe any pain or weakness you've been feeling in your jaw?",
+        "closed": "Have you experienced pain or weakness in your jaw?",
+        "targets": [
+          "Has jaw pain or weakness"
+        ]
+      },
+      "double_vision": {
+        "open": "Can you tell me more about the double vision you're experiencing?",
+        "closed": "Do you have double vision?",
+        "targets": [
+          "Has double vision"
+        ]
+      },
+      "articulation_difficulty": {
+        "open": "Could you describe how your speech has been affected recently?",
+        "closed": "Do you have difficulty articulating words?",
+        "targets": [
+          "Has difficulty articulating words"
+        ]
+      },
+      "swallowing_discomfort": {
+        "open": "Can you describe what it feels like when you swallow, or if you feel any blockage?",
+        "closed": "Do you have difficulty swallowing or a feeling of discomfort/blockage when swallowing?",
+        "targets": [
+          "Has difficulty swallowing or feeling of discomfort/blockage when swallowing"
+        ]
+      },
+      "breathing_difficulty": {
+        "open": "Could you describe your shortness of breath or breathing difficulties in more detail?",
+        "closed": "Do you have shortness of breath or difficulty breathing?",
+        "targets": [
+          "Has shortness of breath or difficulty breathing"
+        ]
+      },
+      "eyelid_lifting_difficulty": {
+        "open": "Can you tell me more about the difficulty you're having opening or raising your eyelids?",
+        "closed": "Do you have difficulty opening or raising one or both eyelids?",
+        "targets": [
+          "Has difficulty opening or raising one or both eyelids"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-018",
+    "age": 57,
+    "sex": "M",
+    "chief_complaint": "I have nasal congestion and a clear runny nose.",
+    "diagnosis": "Cluster headache",
+    "aius": [
+      "Has family history of cluster headaches",
+      "Has pain related to reason for consulting",
+      "Pain is like a knife stroke",
+      "Pain is violent",
+      "Pain in forehead",
+      "Pain in cheek(R)",
+      "Pain in cheek(L)",
+      "Pain in eye(R)",
+      "Pain in eye(L)",
+      "Pain intensity 9",
+      "No pain radiates to another location",
+      "Pain location is precise",
+      "Pain appeared quickly",
+      "Has excessive alcohol use or alcohol addiction",
+      "Has nasal congestion or clear runny nose",
+      "Takes medication that dilates blood vessels",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "pain_location_forehead": {
+        "open": "Could you describe where exactly you're feeling the pain in your forehead?",
+        "closed": "Is the pain located in your forehead?",
+        "targets": [
+          "Pain in forehead"
+        ]
+      },
+      "pain_location_cheek_right": {
+        "open": "Can you tell me more about the pain you're feeling in your right cheek?",
+        "closed": "Is the pain located in your right cheek?",
+        "targets": [
+          "Pain in cheek(R)"
+        ]
+      },
+      "pain_location_cheek_left": {
+        "open": "Could you describe the pain you're experiencing in your left cheek?",
+        "closed": "Is the pain located in your left cheek?",
+        "targets": [
+          "Pain in cheek(L)"
+        ]
+      },
+      "pain_character_knife_stroke": {
+        "open": "Can you describe the quality of your pain—does it feel like a sharp, stabbing sensation, like a knife stroke?",
+        "closed": "Does your pain feel like a knife stroke?",
+        "targets": [
+          "Pain is like a knife stroke"
+        ]
+      },
+      "pain_character_violent": {
+        "open": "How would you describe the intensity or nature of your pain—does it feel violent or severe?",
+        "closed": "Is your pain violent?",
+        "targets": [
+          "Pain is violent"
+        ]
+      },
+      "pain_related_to_consulting": {
+        "open": "Could you tell me more about any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-019",
+    "age": 62,
+    "sex": "M",
+    "chief_complaint": "I am having significant shortness of breath.",
+    "diagnosis": "Acute pulmonary edema",
+    "aius": [
+      "Has dialysis",
+      "Has significantly increased sweating",
+      "Has pain related to reason for consulting",
+      "Pain is heavy",
+      "Feels pain in ankle(R)",
+      "Feels pain in ankle(L)",
+      "Feels pain in breast(L)",
+      "Feels pain in posterior chest wall(R)",
+      "Feels pain in posterior chest wall(L)",
+      "Pain intensity 7",
+      "Pain radiates to biceps(L)",
+      "Pain radiates to jaw",
+      "Pain radiates to scapula(R)",
+      "Pain radiates to scapula(L)",
+      "Pain location precision 7",
+      "Pain appeared 2",
+      "Has shortness of breath or difficulty breathing",
+      "Has high blood pressure or takes medication for high blood pressure",
+      "Has had a heart attack or has angina",
+      "Has heart failure",
+      "Has swelling in one or more areas of the body",
+      "Swelling located in ankle(R)",
+      "Swelling located in ankle(L)",
+      "Swelling located in calf(R)",
+      "Swelling located in calf(L)",
+      "Swelling located in tibia(R)",
+      "Has new fatigue, generalized discomfort, diffuse muscle aches, or change in general well-being",
+      "No recent travel abroad",
+      "Symptoms worse when lying down and alleviated while sitting up",
+      "Symptoms increased with physical exertion but alleviated with rest"
+    ],
+    "info_points": {
+      "Increased Sweating": {
+        "open": "Could you tell me more about your sweating? Has it been different or worse than usual?",
+        "closed": "Have you noticed a significant increase in your sweating recently?",
+        "targets": [
+          "Has significantly increased sweating"
+        ]
+      },
+      "Pain Related to Consultation": {
+        "open": "Can you describe the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to the reason you came to see me?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "Heavy Pain Characterization": {
+        "open": "Can you describe the quality of your pain? What does it feel like when you experience it?",
+        "closed": "Would you say your pain feels heavy?",
+        "targets": [
+          "Pain is heavy"
+        ]
+      },
+      "Ankle Pain Right": {
+        "open": "Could you describe where exactly you're feeling pain in your ankle on the right side?",
+        "closed": "Are you feeling pain specifically in your right ankle?",
+        "targets": [
+          "Feels pain in ankle(R)"
+        ]
+      },
+      "Ankle Pain Left": {
+        "open": "Can you tell me more about the pain you're feeling in your left ankle?",
+        "closed": "Are you feeling pain in your left ankle?",
+        "targets": [
+          "Feels pain in ankle(L)"
+        ]
+      },
+      "Breast Pain Left": {
+        "open": "Could you describe the pain you're feeling in your left breast? When did it start, and what makes it better or worse?",
+        "closed": "Are you feeling pain in your left breast?",
+        "targets": [
+          "Feels pain in breast(L)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-020",
+    "age": 2,
+    "sex": "M",
+    "chief_complaint": "I have pain related to my reason for consulting.",
+    "diagnosis": "Chagas",
+    "aius": [
+      "Has swollen or painful lymph nodes",
+      "Has pain related to reason for consulting",
+      "Pain is tedious",
+      "Pain is sensitive",
+      "Pain is sharp",
+      "Pain is exhausting",
+      "Pain is in cervical spine",
+      "Pain is at top of the head",
+      "Pain is in forehead",
+      "Pain is in temple(L)",
+      "Pain is in epigastric",
+      "Pain intensity 4",
+      "Pain does not radiate to another location",
+      "Pain location precision 6",
+      "Pain appeared instantly",
+      "Has shortness of breath or difficulty breathing",
+      "Has nausea or feels like vomiting",
+      "No swelling located",
+      "Has unintentional weight loss or lost appetite",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "swollen_lymph_nodes": {
+        "open": "Could you tell me more about any swelling or pain in your lymph nodes?",
+        "closed": "Have you noticed any swollen or painful lymph nodes?",
+        "targets": [
+          "Has swollen or painful lymph nodes"
+        ]
+      },
+      "pain_related_to_consultation": {
+        "open": "Can you describe the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "pain_tedious": {
+        "open": "How would you describe the quality of your pain? Does it feel draining or persistent?",
+        "closed": "Is your pain feeling tedious?",
+        "targets": [
+          "Pain is tedious"
+        ]
+      },
+      "pain_sensitive": {
+        "open": "Can you describe how sensitive your pain feels? Is it easily triggered by touch or movement?",
+        "closed": "Is your pain sensitive?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "pain_sharp": {
+        "open": "What does your pain feel like? Is it sharp, stabbing, or sudden in nature?",
+        "closed": "Is your pain sharp?",
+        "targets": [
+          "Pain is sharp"
+        ]
+      },
+      "pain_exhausting": {
+        "open": "How does the pain affect your energy levels? Does it leave you feeling drained or fatigued?",
+        "closed": "Is your pain exhausting?",
+        "targets": [
+          "Pain is exhausting"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-021",
+    "age": 6,
+    "sex": "F",
+    "chief_complaint": "I have greenish or yellowish nasal discharge.",
+    "diagnosis": "Acute rhinosinusitis",
+    "aius": [
+      "Has pain related to reason for consulting",
+      "Pain is sharp",
+      "Feels pain in forehead",
+      "Feels pain in cheek(L)",
+      "Feels pain in nose",
+      "Feels pain in eye(L)",
+      "Pain intensity 3",
+      "Pain radiates to forehead",
+      "Pain radiates to temple(R)",
+      "Pain location precision 7",
+      "Pain appeared rapidly",
+      "Smokes cigarettes",
+      "Has fever",
+      "Has lost sense of smell",
+      "Had a cold in the last 2 weeks",
+      "Has nasal polyps",
+      "Has deviated nasal septum",
+      "Has asthma or has used bronchodilator in the past",
+      "Has been diagnosed with gastroesophageal reflux",
+      "Has greenish or yellowish nasal discharge",
+      "No recent travel abroad",
+      "Vaccinations are up to date",
+      "More likely to develop common allergies than the general population"
+    ],
+    "info_points": {
+      "pain_location_forehead": {
+        "open": "Could you describe where exactly in your forehead you're feeling the pain?",
+        "closed": "Is the pain located in your forehead?",
+        "targets": [
+          "Feels pain in forehead"
+        ]
+      },
+      "pain_location_cheek_left": {
+        "open": "Can you tell me more about the pain you're feeling in your left cheek?",
+        "closed": "Is the pain located in your left cheek?",
+        "targets": [
+          "Feels pain in cheek(L)"
+        ]
+      },
+      "pain_location_nose": {
+        "open": "Could you describe the pain you're feeling in your nose?",
+        "closed": "Is the pain located in your nose?",
+        "targets": [
+          "Feels pain in nose"
+        ]
+      },
+      "pain_location_eye_left": {
+        "open": "Can you describe the pain you're experiencing in your left eye?",
+        "closed": "Is the pain located in your left eye?",
+        "targets": [
+          "Feels pain in eye(L)"
+        ]
+      },
+      "pain_character_sharp": {
+        "open": "How would you describe the quality of your pain? Can you give me a word or phrase that captures how it feels?",
+        "closed": "Is your pain sharp?",
+        "targets": [
+          "Pain is sharp"
+        ]
+      },
+      "pain_related_to_consultation": {
+        "open": "Could you tell me more about the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-022",
+    "age": 15,
+    "sex": "F",
+    "chief_complaint": "My skin is much paler than usual.",
+    "diagnosis": "Anemia",
+    "aius": [
+      "Has poor diet",
+      "Has family history of anemia",
+      "Has pain related to reason for consulting",
+      "Pain is tugging",
+      "Pain is a cramp",
+      "Pain is exhausting",
+      "Pain in forehead",
+      "Pain in temple(R)",
+      "Pain in temple(L)",
+      "Pain intensity 5",
+      "No pain radiates to another location",
+      "Pain located precisely at 3",
+      "Pain appeared quickly, speed 2",
+      "Has shortness of breath or difficulty breathing",
+      "Feels slightly dizzy or lightheaded",
+      "Has chronic kidney failure",
+      "Has recently had black stools",
+      "Has very abundant or very long menstruation periods",
+      "Is taking new oral anticoagulants (NOACs)",
+      "Skin is much paler than usual",
+      "Is pregnant or thinks they are pregnant",
+      "No recent travel abroad",
+      "BMI less than 18.5 or underweight"
+    ],
+    "info_points": {
+      "Pain related to consulting reason": {
+        "open": "Could you tell me more about any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to the reason you came to see me?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "Pain character: tugging": {
+        "open": "Can you describe the sensation of the pain? What does it feel like?",
+        "closed": "Would you say the pain feels like a tugging sensation?",
+        "targets": [
+          "Pain is tugging"
+        ]
+      },
+      "Pain character: cramp": {
+        "open": "How would you describe the quality of your pain? Is it similar to a muscle cramp?",
+        "closed": "Is the pain feeling like a cramp?",
+        "targets": [
+          "Pain is a cramp"
+        ]
+      },
+      "Pain character: exhausting": {
+        "open": "How does the pain affect you overall? Does it make you feel drained or exhausted?",
+        "closed": "Does the pain make you feel exhausted?",
+        "targets": [
+          "Pain is exhausting"
+        ]
+      },
+      "Pain location: forehead": {
+        "open": "Can you point to where exactly you're feeling the pain in your head?",
+        "closed": "Is the pain located in your forehead?",
+        "targets": [
+          "Pain in forehead"
+        ]
+      },
+      "Pain location: temple(R)": {
+        "open": "Could you describe where in your head the pain is most intense? Is it on the right side, near your temple?",
+        "closed": "Is the pain located in your right temple?",
+        "targets": [
+          "Pain in temple(R)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-023",
+    "age": 7,
+    "sex": "M",
+    "chief_complaint": "I have sharp, knife-like pain in my left iliac fossa and epigastric area, which started suddenly and is moderately intense.",
+    "diagnosis": "Anaphylaxis",
+    "aius": [
+      "Has known severe food allergy",
+      "Has been in contact with or ate something that triggers an allergy",
+      "Has pain related to reason for consulting",
+      "Pain is a knife stroke",
+      "Pain is a cramp",
+      "Pain is sharp",
+      "Feels pain in iliac fossa(L)",
+      "Feels pain in hypochondrium(R)",
+      "Feels pain in hypochondrium(L)",
+      "Feels pain in epigastric",
+      "Pain intensity 3",
+      "Pain does not radiate to another location",
+      "Pain location precision 4",
+      "Pain onset speed 2",
+      "Experiences shortness of breath or difficulty breathing significantly",
+      "Feels lightheaded and dizzy or feels like fainting",
+      "Has lesions, redness, or skin problems related to condition",
+      "Rash color is pink",
+      "Lesions do not peel off",
+      "Rash is swollen",
+      "Affected region is located at back of the neck",
+      "Affected region is located at biceps(L)",
+      "Affected region is located at mouth",
+      "Affected region is located at thyroid cartilage",
+      "Affected region is located at ankle(R)",
+      "Pain intensity caused by rash is 1",
+      "Lesion(s) are larger than 1cm",
+      "Itching severity is 9",
+      "Has swelling in one or more areas of the body",
+      "Swelling is located at forehead",
+      "Swelling is located at cheek(R)",
+      "Swelling is located at cheek(L)",
+      "Swelling is located at nose",
+      "Did not lose consciousness",
+      "Has noticed a high pitched sound when breathing in",
+      "No recent travel abroad",
+      "Is more likely to develop common allergies than the general population"
+    ],
+    "info_points": {
+      "Allergy Exposure": {
+        "open": "Could you tell me about any recent exposures or foods you've eaten that might have triggered an allergic reaction?",
+        "closed": "Have you been in contact with or eaten anything that you know causes an allergic reaction?",
+        "targets": [
+          "Has been in contact with or ate something that triggers an allergy"
+        ]
+      },
+      "Pain Related to Consultation": {
+        "open": "Can you describe any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "Knife Stroke Pain": {
+        "open": "Can you describe the quality of your pain—does it feel like a sudden, sharp stab, like a knife cutting through?",
+        "closed": "Does your pain feel like a knife stroke?",
+        "targets": [
+          "Pain is a knife stroke"
+        ]
+      },
+      "Cramp Pain": {
+        "open": "Could you describe the nature of your pain—does it feel like a muscle cramp or tightening?",
+        "closed": "Is your pain described as a cramp?",
+        "targets": [
+          "Pain is a cramp"
+        ]
+      },
+      "Sharp Pain": {
+        "open": "Can you describe the character of your pain—does it feel sharp, stabbing, or piercing?",
+        "closed": "Is your pain sharp?",
+        "targets": [
+          "Pain is sharp"
+        ]
+      },
+      "Iliac Fossa Pain (Left)": {
+        "open": "Where exactly do you feel the pain? Can you point to the area or describe it further?",
+        "closed": "Do you feel pain specifically in the left iliac fossa?",
+        "targets": [
+          "Feels pain in iliac fossa(L)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-024",
+    "age": 4,
+    "sex": "M",
+    "chief_complaint": "I have a cough and pain in my throat, especially on the right side, with a burning, sensitive sensation, and I also feel a fever and hoarseness.",
+    "diagnosis": "Acute laryngitis",
+    "aius": [
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Pain is burning",
+      "Pain in tonsil(R)",
+      "Pain in tonsil(L)",
+      "Pain in thyroid cartilage",
+      "Pain in palace",
+      "Pain under the jaw",
+      "Pain intensity 7",
+      "No pain radiates to another location",
+      "Pain location precision 8",
+      "Pain onset speed 4",
+      "Has fever",
+      "Had a cold in the last 2 weeks",
+      "Has cough",
+      "No recent travel abroad",
+      "Voice has become hoarse"
+    ],
+    "info_points": {
+      "pain_location_tonsil_R": {
+        "open": "Could you describe where exactly you're feeling the pain in your right tonsil?",
+        "closed": "Is the pain specifically located in your right tonsil?",
+        "targets": [
+          "Pain in tonsil(R)"
+        ]
+      },
+      "pain_location_tonsil_L": {
+        "open": "Can you tell me more about the pain you're feeling on the left side, near your tonsil?",
+        "closed": "Is the pain specifically located in your left tonsil?",
+        "targets": [
+          "Pain in tonsil(L)"
+        ]
+      },
+      "pain_location_thyroid_cartilage": {
+        "open": "Could you describe the location and sensation of the pain around your thyroid cartilage?",
+        "closed": "Is the pain located in your thyroid cartilage?",
+        "targets": [
+          "Pain in thyroid cartilage"
+        ]
+      },
+      "pain_character_burning": {
+        "open": "Can you describe how the pain feels—does it feel like a burning sensation?",
+        "closed": "Does your pain feel burning?",
+        "targets": [
+          "Pain is burning"
+        ]
+      },
+      "pain_character_sensitive": {
+        "open": "How would you describe the quality of your pain—does it feel sensitive or sharp?",
+        "closed": "Is your pain sensitive?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "pain_related_to_consultation": {
+        "open": "Could you tell me more about any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're experiencing related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-025",
+    "age": 30,
+    "sex": "F",
+    "chief_complaint": "I have a fever.",
+    "diagnosis": "URTI",
+    "aius": [
+      "Has had contact with a person with similar symptoms in the past 2 weeks",
+      "Lives with 4 or more people",
+      "Attends or works in a daycare",
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Pain is heavy",
+      "Pain is in the top of the head",
+      "Pain is in the forehead",
+      "Pain is in the cheek(R)",
+      "Pain is in the cheek(L)",
+      "Pain is in the occiput",
+      "Pain intensity 6",
+      "Pain does not radiate to another location",
+      "Pain location precision 6",
+      "Pain appeared gradually (5)",
+      "Has fever",
+      "Has diffuse muscle pain",
+      "Has nasal congestion or a clear runny nose",
+      "Has cough",
+      "No recent travel abroad",
+      "Exposed to secondhand cigarette smoke on a daily basis"
+    ],
+    "info_points": {
+      "pain_related_to_consulting": {
+        "open": "Could you tell me more about any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "pain_sensitive": {
+        "open": "Can you describe the quality of the pain? What does it feel like when you touch or move the area?",
+        "closed": "Is the pain sensitive to touch or pressure?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "pain_heavy": {
+        "open": "How would you describe the sensation of the pain? Does it feel pressing, heavy, or dull?",
+        "closed": "Does the pain feel heavy or pressing?",
+        "targets": [
+          "Pain is heavy"
+        ]
+      },
+      "pain_top_of_head": {
+        "open": "Could you point to exactly where in your head you feel the pain? Is it at the very top?",
+        "closed": "Is the pain located at the top of your head?",
+        "targets": [
+          "Pain is in the top of the head"
+        ]
+      },
+      "pain_forehead": {
+        "open": "Can you describe where in your forehead the pain is? Is it across the entire forehead or just one area?",
+        "closed": "Is the pain located in your forehead?",
+        "targets": [
+          "Pain is in the forehead"
+        ]
+      },
+      "pain_cheek_right": {
+        "open": "Could you show me exactly where in your right cheek the pain is? Is it near your tooth or jaw?",
+        "closed": "Is the pain located in your right cheek?",
+        "targets": [
+          "Pain is in the cheek(R)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-026",
+    "age": 66,
+    "sex": "M",
+    "chief_complaint": "I feel slightly dizzy or lightheaded.",
+    "diagnosis": "PSVT",
+    "aius": [
+      "Pain is unspecified",
+      "No pain location",
+      "Pain intensity 0",
+      "Pain does not radiate",
+      "Pain location is imprecise",
+      "Pain appeared gradually",
+      "Has shortness of breath or difficulty breathing",
+      "Feels slightly dizzy or lightheaded",
+      "Feels lightheaded and dizzy or feels like fainting",
+      "Feels heart beating fast, irregularly, or palpitations",
+      "No recent travel abroad",
+      "Recently took decongestants or other stimulant substances"
+    ],
+    "info_points": {
+      "Pain unspecified": {
+        "open": "Could you describe the pain you're feeling in your own words?",
+        "closed": "Is the pain described as unspecified or undefined?",
+        "targets": [
+          "Pain is unspecified"
+        ]
+      },
+      "No pain location": {
+        "open": "Can you tell me where, if anywhere, you feel the pain?",
+        "closed": "Do you have a specific location for the pain?",
+        "targets": [
+          "No pain location"
+        ]
+      },
+      "Pain intensity 0": {
+        "open": "How would you rate the intensity of your pain on a scale from 0 to 10?",
+        "closed": "Is your pain intensity zero?",
+        "targets": [
+          "Pain intensity 0"
+        ]
+      },
+      "Pain does not radiate": {
+        "open": "Has the pain stayed in one place, or has it spread to other areas?",
+        "closed": "Does the pain radiate to another part of your body?",
+        "targets": [
+          "Pain does not radiate"
+        ]
+      },
+      "Pain location imprecise": {
+        "open": "Can you describe how precisely you can locate the pain in your body?",
+        "closed": "Is the location of your pain imprecise or vague?",
+        "targets": [
+          "Pain location is imprecise"
+        ]
+      },
+      "Pain appeared gradually": {
+        "open": "How did the pain start—was it sudden or did it build up over time?",
+        "closed": "Did the pain appear gradually?",
+        "targets": [
+          "Pain appeared gradually"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-027",
+    "age": 72,
+    "sex": "M",
+    "chief_complaint": "I have skin lesions, redness, and problems on my skin that I believe are related to the condition I am consulting for.",
+    "diagnosis": "Anaphylaxis",
+    "aius": [
+      "Has known severe food allergy",
+      "Has been in contact with or ate something that triggers allergy",
+      "Has diarrhea or increased stool frequency",
+      "Has pain related to reason for consulting",
+      "Pain is like a knife stroke",
+      "Pain is like a cramp",
+      "Feels pain in flank(R)",
+      "Feels pain in iliac fossa(L)",
+      "Feels pain in pubis",
+      "Feels pain in epigastric",
+      "Pain intensity 3",
+      "Pain does not radiate to another location",
+      "Pain location precision 6",
+      "Pain appeared slowly",
+      "Has shortness of breath or difficulty breathing",
+      "Has lesions, redness, or skin problems related to condition",
+      "Rash color is pink",
+      "Lesions do not peel off",
+      "Rash is swollen",
+      "Affected region located at back of the neck",
+      "Affected region located at biceps(L)",
+      "Affected region located at thigh(R)",
+      "Affected region located at thigh(L)",
+      "Affected region located at shoulder(R)",
+      "Pain caused by rash intensity 0",
+      "Lesion(s) larger than 1cm",
+      "Itching severity 10",
+      "Has swelling in one or more areas of body",
+      "Swelling located at forehead",
+      "Swelling located at cheek(R)",
+      "Swelling located at cheek(L)",
+      "Did not lose consciousness",
+      "No recent travel abroad",
+      "Is more likely to develop common allergies than general population"
+    ],
+    "info_points": {
+      "Allergy Exposure": {
+        "open": "Could you tell me about any recent exposures to substances or foods that might have triggered an allergic reaction?",
+        "closed": "Have you been in contact with or eaten anything that you know causes an allergic reaction?",
+        "targets": [
+          "Has been in contact with or ate something that triggers allergy"
+        ]
+      },
+      "Diarrhea/Increased Stool Frequency": {
+        "open": "Can you describe your bowel movements over the past few days—have they been looser or more frequent than usual?",
+        "closed": "Have you had diarrhea or an increase in stool frequency?",
+        "targets": [
+          "Has diarrhea or increased stool frequency"
+        ]
+      },
+      "Pain Related to Consultation": {
+        "open": "Could you describe any pain you're experiencing and how it relates to why you came to see me today?",
+        "closed": "Do you have pain somewhere that is related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "Knife-like Pain": {
+        "open": "Can you describe the quality of your pain—does it feel sharp, like a knife cutting through?",
+        "closed": "Is your pain like a knife stroke?",
+        "targets": [
+          "Pain is like a knife stroke"
+        ]
+      },
+      "Cramp-like Pain": {
+        "open": "Can you describe the sensation of your pain—does it feel like a cramp or tightening in the muscles?",
+        "closed": "Is your pain like a cramp?",
+        "targets": [
+          "Pain is like a cramp"
+        ]
+      },
+      "Flank Pain (Right)": {
+        "open": "Could you describe where exactly you're feeling pain in your side—specifically on the right side?",
+        "closed": "Do you feel pain in your right flank?",
+        "targets": [
+          "Feels pain in flank(R)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-028",
+    "age": 34,
+    "sex": "F",
+    "chief_complaint": "I have nasal congestion and a clear runny nose.",
+    "diagnosis": "Viral pharyngitis",
+    "aius": [
+      "Has had contact with a person with similar symptoms in the past 2 weeks",
+      "Lives with 4 or more people",
+      "Attends or works in a daycare",
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Feels pain in tonsil(R)",
+      "Feels pain in tonsil(L)",
+      "Feels pain in thyroid cartilage",
+      "Feels pain in palace",
+      "Feels pain in pharynx",
+      "Pain intensity 9",
+      "No pain radiating to another location",
+      "Pain located precisely 7",
+      "Pain appeared 2",
+      "Smokes cigarettes",
+      "Has nasal congestion or a clear runny nose",
+      "Has a cough",
+      "No recent travel abroad",
+      "Is immunosuppressed"
+    ],
+    "info_points": {
+      "pain_location": {
+        "open": "Can you point to or describe where you feel the pain?",
+        "closed": "Is the pain located in your palate?",
+        "targets": [
+          "Feels pain in palace"
+        ]
+      },
+      "pain_character": {
+        "open": "Can you describe the nature of your pain—like sharp, dull, throbbing, etc.?",
+        "closed": "Is your pain sensitive to touch?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "pain_relevance": {
+        "open": "How does the pain relate to why you came in today?",
+        "closed": "Is the pain related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-029",
+    "age": 79,
+    "sex": "M",
+    "chief_complaint": "I feel my heart is racing and skipping beats.",
+    "diagnosis": "PSVT",
+    "aius": [
+      "Pain is unspecified",
+      "No pain location",
+      "Pain intensity 0",
+      "Pain does not radiate",
+      "Pain location is imprecise",
+      "Pain onset is gradual",
+      "Does not consume energy drinks regularly",
+      "Does not regularly take stimulant drugs",
+      "Experiencing shortness of breath or difficulty breathing in a significant way",
+      "Feels slightly dizzy or lightheaded",
+      "Feels heart is beating fast (racing), irregularly (missing a beat), or feels palpitations",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "Pain unspecified": {
+        "open": "Could you describe the pain you're feeling in more detail?",
+        "closed": "Is the pain described as unspecified or not clearly defined?",
+        "targets": [
+          "AIU: \"Pain is unspecified\""
+        ]
+      },
+      "No pain location": {
+        "open": "Can you tell me where, if anywhere, you feel the pain?",
+        "closed": "Do you have a specific location for the pain?",
+        "targets": [
+          "AIU: \"No pain location\""
+        ]
+      },
+      "Pain intensity 0": {
+        "open": "How would you rate the intensity of your pain on a scale from 0 to 10?",
+        "closed": "Is your pain intensity currently zero?",
+        "targets": [
+          "AIU: \"Pain intensity 0\""
+        ]
+      },
+      "Pain does not radiate": {
+        "open": "Does the pain spread to any other part of your body?",
+        "closed": "Does the pain radiate to another area?",
+        "targets": [
+          "AIU: \"Pain does not radiate\""
+        ]
+      },
+      "Pain location imprecise": {
+        "open": "Can you describe how precisely you can locate the pain?",
+        "closed": "Is the location of the pain poorly defined or vague?",
+        "targets": [
+          "AIU: \"Pain location is imprecise\""
+        ]
+      },
+      "Pain onset gradual": {
+        "open": "How would you describe the way the pain started—suddenly or gradually?",
+        "closed": "Did the pain start gradually?",
+        "targets": [
+          "AIU: \"Pain onset is gradual\""
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-030",
+    "age": 17,
+    "sex": "F",
+    "chief_complaint": "I have muscle spasms or soreness in my neck that are making it hard to turn my head.",
+    "diagnosis": "Acute dystonic reactions",
+    "aius": [
+      "Has started or taken antipsychotic medication within the last 7 days",
+      "Regularly takes stimulant drugs",
+      "Experiencing shortness of breath or difficulty breathing in a significant way",
+      "Has felt like suffocating for a very short time associated with inability to breathe or speak",
+      "Has been treated in hospital recently for nausea, agitation, intoxication or aggressive behavior and received medication via an intravenous or intramuscular route",
+      "Has trouble keeping tongue in mouth",
+      "Muscle spasms or soreness in neck are keeping from turning head to one side",
+      "Has annoying muscle spasms in face, neck or any other part of body",
+      "No recent travel abroad",
+      "Suddenly has difficulty or inability to open mouth or has jaw pain when opening it"
+    ],
+    "info_points": {
+      "shortness_of_breath": {
+        "open": "Could you describe the shortness of breath you're experiencing? When does it happen, and how severe is it?",
+        "closed": "Is your shortness of breath significant enough to interfere with daily activities?",
+        "targets": [
+          "Experiencing shortness of breath or difficulty breathing in a significant way"
+        ]
+      },
+      "suffocation_episode": {
+        "open": "Can you tell me more about the time you felt like you were suffocating? What were you doing, and how long did it last?",
+        "closed": "Did you feel like you were suffocating for a very short time with an inability to breathe or speak?",
+        "targets": [
+          "Has felt like suffocating for a very short time associated with inability to breathe or speak"
+        ]
+      },
+      "tongue_control": {
+        "open": "Could you describe how your tongue feels when you try to keep it in your mouth? Is there a specific situation when this happens?",
+        "closed": "Do you have trouble keeping your tongue in your mouth?",
+        "targets": [
+          "Has trouble keeping tongue in mouth"
+        ]
+      },
+      "neck_spasm_limitation": {
+        "open": "Can you describe the muscle spasms or soreness in your neck? How do they affect your ability to turn your head?",
+        "closed": "Are muscle spasms or soreness in your neck preventing you from turning your head to one side?",
+        "targets": [
+          "Muscle spasms or soreness in neck are keeping from turning head to one side"
+        ]
+      },
+      "annoying_spasms": {
+        "open": "Could you describe where the muscle spasms are happening and how bothersome they are? Do they come and go or stay constant?",
+        "closed": "Do you have annoying muscle spasms in your face, neck, or any other part of your body?",
+        "targets": [
+          "Has annoying muscle spasms in face, neck or any other part of body"
+        ]
+      },
+      "jaw_function_issue": {
+        "open": "Can you describe the difficulty opening your mouth or the jaw pain? Did it happen suddenly, and what makes it worse?",
+        "closed": "Do you suddenly have difficulty or an inability to open your mouth or have jaw pain when opening it?",
+        "targets": [
+          "Suddenly has difficulty or inability to open mouth or has jaw pain when opening it"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-031",
+    "age": 3,
+    "sex": "M",
+    "chief_complaint": "I have sharp, stabbing pain on the right side of my chest that worsens when I breathe deeply.",
+    "diagnosis": "Spontaneous pneumothorax",
+    "aius": [
+      "Has spontaneous pneumothorax",
+      "Has pain related to reason for consulting",
+      "Pain is heartbreaking",
+      "Pain is a knife stroke",
+      "Pain is violent",
+      "Pain is in lower chest",
+      "Pain is on side of the chest(R)",
+      "Pain is in upper chest",
+      "Pain intensity 7",
+      "No pain radiation",
+      "Pain location precision 6",
+      "Pain onset speed 10",
+      "Has shortness of breath or difficulty breathing",
+      "Smokes cigarettes",
+      "Has chronic obstructive pulmonary disease (COPD)",
+      "No recent travel abroad",
+      "Has symptoms increased with physical exertion but alleviated with rest",
+      "Has pain increased when breathing in deeply"
+    ],
+    "info_points": {
+      "pain_location_lower_chest": {
+        "open": "Could you describe where exactly in your lower chest the pain is located?",
+        "closed": "Is the pain specifically in your lower chest?",
+        "targets": [
+          "Pain is in lower chest"
+        ]
+      },
+      "pain_location_right_side_chest": {
+        "open": "Can you tell me more about the location of the pain on the right side of your chest?",
+        "closed": "Is the pain on the right side of your chest?",
+        "targets": [
+          "Pain is on side of the chest(R)"
+        ]
+      },
+      "pain_character_heartbreaking": {
+        "open": "Can you describe what you mean by 'heartbreaking' pain? How does it feel?",
+        "closed": "Do you feel the pain is heartbreaking?",
+        "targets": [
+          "Pain is heartbreaking"
+        ]
+      },
+      "pain_character_knife_stroke": {
+        "open": "When you say the pain feels like a knife stroke, can you describe that sensation in more detail?",
+        "closed": "Does the pain feel like a knife stroke?",
+        "targets": [
+          "Pain is a knife stroke"
+        ]
+      },
+      "pain_character_violent": {
+        "open": "Could you elaborate on what you mean by 'violent' pain? How would you describe its intensity or quality?",
+        "closed": "Is the pain violent?",
+        "targets": [
+          "Pain is violent"
+        ]
+      },
+      "pain_related_to_consulting": {
+        "open": "Can you tell me more about the pain you're experiencing and how it relates to why you came to see me today?",
+        "closed": "Is the pain related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-032",
+    "age": 34,
+    "sex": "F",
+    "chief_complaint": "I feel my heart is beating fast, racing, or irregularly, and I'm experiencing palpitations.",
+    "diagnosis": "PSVT",
+    "aius": [
+      "Drinks coffee or tea regularly",
+      "Has pain related to reason for consulting",
+      "Pain is burning",
+      "Pain is in top of the head",
+      "Pain is in forehead",
+      "Pain intensity 2",
+      "Pain does not radiate to another location",
+      "Pain is precisely located at 5",
+      "Pain appeared 3",
+      "Consumes energy drinks regularly",
+      "Feels slightly dizzy or lightheaded",
+      "Feels heart is beating fast (racing), irregularly (missing a beat), or feels palpitations",
+      "No recent travel abroad",
+      "Recently took decongestants or other substances with stimulant effects"
+    ],
+    "info_points": {
+      "pain_location_top_of_head": {
+        "open": "Could you describe where exactly in your head the pain is located?",
+        "closed": "Is the pain specifically at the top of your head?",
+        "targets": [
+          "Pain is in top of the head"
+        ]
+      },
+      "pain_location_forehead": {
+        "open": "Can you describe the area of your forehead where you're feeling pain?",
+        "closed": "Is the pain located in your forehead?",
+        "targets": [
+          "Pain is in forehead"
+        ]
+      },
+      "pain_character_burning": {
+        "open": "How would you describe the quality of your pain? Is it sharp, dull, throbbing, or something else?",
+        "closed": "Is your pain burning in nature?",
+        "targets": [
+          "Pain is burning"
+        ]
+      },
+      "pain_intensity_2": {
+        "open": "On a scale from 0 to 10, how would you rate the intensity of your pain right now?",
+        "closed": "Is your pain intensity a 2 on a scale of 0 to 10?",
+        "targets": [
+          "Pain intensity 2"
+        ]
+      },
+      "pain_radiation_none": {
+        "open": "Has the pain spread or moved to any other part of your body?",
+        "closed": "Does the pain radiate to another location?",
+        "targets": [
+          "Pain does not radiate to another location"
+        ]
+      },
+      "pain_related_to_consultation": {
+        "open": "Could you tell me more about the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-033",
+    "age": 45,
+    "sex": "M",
+    "chief_complaint": "I feel out of breath with minimal physical effort.",
+    "diagnosis": "Myocarditis",
+    "aius": [
+      "Has recent viral infection",
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Feels pain in lower chest",
+      "Feels pain on side of the chest(L)",
+      "Feels pain in breast(L)",
+      "Pain intensity 4",
+      "No pain radiates to another location",
+      "Pain located precisely 6",
+      "Pain appeared gradually, intensity 4",
+      "Feels out of breath with minimal physical effort",
+      "Experiencing shortness of breath or difficulty breathing in a significant way",
+      "Feels palpitations",
+      "Has new fatigue, generalized and vague discomfort, diffuse muscle aches, or change in general well-being",
+      "No recent travel abroad",
+      "Symptoms worse when lying down and alleviated while sitting up",
+      "Symptoms increased with physical exertion but alleviated with rest"
+    ],
+    "info_points": {
+      "pain_location_related_to_consult": {
+        "open": "Could you describe where you're feeling pain and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "pain_character_sensitivity": {
+        "open": "Can you describe how the pain feels—does it feel sharp, dull, burning, or sensitive to touch?",
+        "closed": "Is your pain sensitive to touch?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "pain_location_lower_chest": {
+        "open": "Could you tell me more about the pain you're feeling in your lower chest? Is it constant, sharp, or does it change with movement?",
+        "closed": "Do you feel pain in your lower chest?",
+        "targets": [
+          "Feels pain in lower chest"
+        ]
+      },
+      "pain_location_left_chest_side": {
+        "open": "Can you describe the pain you're feeling on the left side of your chest? Is it localized or radiating?",
+        "closed": "Do you feel pain on the left side of your chest?",
+        "targets": [
+          "Feels pain on side of the chest(L)"
+        ]
+      },
+      "pain_location_left_breast": {
+        "open": "Could you describe the pain you're feeling in your left breast? Does it come and go, or is it constant?",
+        "closed": "Do you feel pain in your left breast?",
+        "targets": [
+          "Feels pain in breast(L)"
+        ]
+      },
+      "pain_intensity_4": {
+        "open": "On a scale from 0 to 10, how would you rate the intensity of your pain right now?",
+        "closed": "Is your pain intensity a 4 out of 10?",
+        "targets": [
+          "Pain intensity 4"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-034",
+    "age": 10,
+    "sex": "F",
+    "chief_complaint": "I have a cough.",
+    "diagnosis": "Bronchospasm / acute asthma exacerbation",
+    "aius": [
+      "Has had 2 or more asthma attacks in the past year",
+      "Has family member with asthma",
+      "Has been hospitalized for an asthma attack in the past year",
+      "Has had a cold in the last 2 weeks",
+      "Has been diagnosed with chronic sinusitis",
+      "Has asthma or has ever used a bronchodilator",
+      "Has a cough",
+      "No recent travel abroad",
+      "Has noticed a wheezing sound when exhaling",
+      "Is more likely to develop common allergies than the general population"
+    ],
+    "info_points": {
+      "cough": {
+        "open": "Could you describe any cough you've been experiencing, including when it happens and how it feels?",
+        "closed": "Do you have a cough?",
+        "targets": [
+          "Has a cough"
+        ]
+      },
+      "wheezing": {
+        "open": "Can you describe the wheezing sound you've noticed when exhaling—when it occurs, how it sounds, and if anything makes it better or worse?",
+        "closed": "Have you noticed a wheezing sound when you exhale?",
+        "targets": [
+          "Has noticed a wheezing sound when exhaling"
+        ]
+      },
+      "asthma attacks": {
+        "open": "Could you tell me about your asthma episodes in the past year—how many times they occurred and what symptoms you had during them?",
+        "closed": "Have you had 2 or more asthma attacks in the past year?",
+        "targets": [
+          "Has had 2 or more asthma attacks in the past year"
+        ]
+      },
+      "family asthma": {
+        "open": "Can you describe any family members who have asthma—what their relationship is to you and when they were diagnosed?",
+        "closed": "Do you have any family members who have asthma?",
+        "targets": [
+          "Has family member with asthma"
+        ]
+      },
+      "hospitalization": {
+        "open": "Could you tell me about any hospitalizations for asthma in the past year—what led to the admission and how long you stayed?",
+        "closed": "Have you been hospitalized for an asthma attack in the past year?",
+        "targets": [
+          "Has been hospitalized for an asthma attack in the past year"
+        ]
+      },
+      "recent cold": {
+        "open": "Can you describe any recent cold symptoms you’ve had in the last two weeks—when they started, how long they lasted, and what they included?",
+        "closed": "Have you had a cold in the last 2 weeks?",
+        "targets": [
+          "Has had a cold in the last 2 weeks"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-035",
+    "age": 3,
+    "sex": "M",
+    "chief_complaint": "I have nasal congestion and a clear runny nose.",
+    "diagnosis": "Viral pharyngitis",
+    "aius": [
+      "Has coughed up blood",
+      "Lives with 4 or more people",
+      "Attends or works in a daycare",
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Pain is burning",
+      "Pain in tonsil(L)",
+      "Pain in thyroid cartilage",
+      "Pain in palace",
+      "Pain in pharynx",
+      "Pain under the jaw",
+      "Pain intensity 4",
+      "Pain does not radiate to another location",
+      "Pain location is precise to 5",
+      "Pain appeared rapidly, speed 2",
+      "Has fever",
+      "Has nasal congestion or clear runny nose",
+      "No recent travel abroad",
+      "Is immunosuppressed"
+    ],
+    "info_points": {
+      "coughing up blood": {
+        "open": "Could you tell me more about any coughing up of blood you've experienced?",
+        "closed": "Have you coughed up blood recently?",
+        "targets": [
+          "Has coughed up blood"
+        ]
+      },
+      "pain related to consultation": {
+        "open": "Can you describe any pain you're feeling that might be connected to why you came in today?",
+        "closed": "Is the pain you're experiencing related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "pain sensitivity": {
+        "open": "Can you describe how sensitive your pain feels? Does it hurt when touched or pressed?",
+        "closed": "Is your pain sensitive to touch?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "burning pain": {
+        "open": "How would you describe the quality of your pain? Does it feel like a burning sensation?",
+        "closed": "Does your pain feel burning?",
+        "targets": [
+          "Pain is burning"
+        ]
+      },
+      "tonsil pain": {
+        "open": "Can you point to where exactly you're feeling pain in your throat? Is it specifically in the left tonsil area?",
+        "closed": "Is the pain located in the left tonsil?",
+        "targets": [
+          "Pain in tonsil(L)"
+        ]
+      },
+      "thyroid cartilage pain": {
+        "open": "Can you describe where you're feeling pain in your neck? Is it around the thyroid cartilage?",
+        "closed": "Is the pain located in the thyroid cartilage?",
+        "targets": [
+          "Pain in thyroid cartilage"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-036",
+    "age": 14,
+    "sex": "F",
+    "chief_complaint": "I lost consciousness.",
+    "diagnosis": "Pulmonary embolism",
+    "aius": [
+      "Has active cancer",
+      "Has coughed up blood",
+      "Has pain related to reason for consulting",
+      "Pain is a knife stroke",
+      "Feels pain on side of the chest(R)",
+      "Feels pain on side of the chest(L)",
+      "Feels pain in breast(R)",
+      "Feels pain in posterior chest wall(R)",
+      "Feels pain in posterior chest wall(L)",
+      "Pain intensity 8",
+      "Pain radiates to side of the chest(R)",
+      "Pain radiates to side of the chest(L)",
+      "Pain radiates to scapula(L)",
+      "Pain radiates to breast(L)",
+      "Pain radiates to posterior chest wall(L)",
+      "Pain location precision 10",
+      "Pain appeared 4 minutes ago",
+      "Has shortness of breath or difficulty breathing in a significant way",
+      "Takes hormones",
+      "Has had deep vein thrombosis (DVT)",
+      "Has swelling in one or more areas of the body",
+      "Swelling located in posterior aspect of the ankle(L)",
+      "Swelling located in calf(L)",
+      "Lost consciousness",
+      "Had surgery within the last month",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "coughing up blood": {
+        "open": "Could you tell me more about any blood you've coughed up?",
+        "closed": "Have you coughed up blood recently?",
+        "targets": [
+          "AIU: \"Has coughed up blood\""
+        ]
+      },
+      "pain related to consultation": {
+        "open": "Can you describe the pain you're feeling and how it relates to why you came in today?",
+        "closed": "Is the pain you're experiencing related to your reason for consulting?",
+        "targets": [
+          "AIU: \"Has pain related to reason for consulting\""
+        ]
+      },
+      "knife-like pain": {
+        "open": "Can you describe the quality of your pain in more detail?",
+        "closed": "Is your pain sharp, like a knife stroke?",
+        "targets": [
+          "AIU: \"Pain is a knife stroke\""
+        ]
+      },
+      "right side chest pain": {
+        "open": "Can you describe where exactly you feel the pain on your chest?",
+        "closed": "Do you feel pain specifically on the right side of your chest?",
+        "targets": [
+          "AIU: \"Feels pain on side of the chest(R)\""
+        ]
+      },
+      "left side chest pain": {
+        "open": "Can you describe the location and sensation of the pain you're feeling?",
+        "closed": "Do you feel pain specifically on the left side of your chest?",
+        "targets": [
+          "AIU: \"Feels pain on side of the chest(L)\""
+        ]
+      },
+      "right breast pain": {
+        "open": "Could you describe the pain you're feeling in your breast area?",
+        "closed": "Do you feel pain in your right breast?",
+        "targets": [
+          "AIU: \"Feels pain in breast(R)\""
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-037",
+    "age": 28,
+    "sex": "M",
+    "chief_complaint": "I have lost consciousness associated with violent and sustained muscle contractions or had an absence episode.",
+    "diagnosis": "Sarcoidosis",
+    "aius": [
+      "Has swollen or painful lymph nodes",
+      "Has lost consciousness associated with violent and sustained muscle contractions or had an absence episode",
+      "Has pain somewhere, related to reason for consulting",
+      "Pain is sensitive",
+      "Pain is burning",
+      "Feels pain in finger (little finger)(R)",
+      "Feels pain in finger (index)(R)",
+      "Feels pain in finger (middle)(R)",
+      "Feels pain in finger (middle)(L)",
+      "Feels pain in shoulder(R)",
+      "Pain intensity 6",
+      "Pain does not radiate to another location",
+      "Pain is precisely located at 6",
+      "Pain appeared 2",
+      "Is significantly overweight compared to people of the same height",
+      "Has diffuse (widespread) redness in one or both eyes",
+      "Rash color is NA",
+      "Lesions do not peel off",
+      "Rash is not swollen",
+      "Affected region is nowhere",
+      "Pain caused by rash is 0",
+      "Lesion is not larger than 1cm",
+      "Itching severity is 0",
+      "Traveled to North America in the last 4 weeks"
+    ],
+    "info_points": {
+      "Lymph node swelling/pain": {
+        "open": "Could you tell me more about any swollen or painful lymph nodes you've noticed?",
+        "closed": "Have you had any swollen or painful lymph nodes recently?",
+        "targets": [
+          "Has swollen or painful lymph nodes"
+        ]
+      },
+      "Loss of consciousness with seizures/absence": {
+        "open": "Can you describe any episodes where you lost consciousness, especially if there were violent or sustained muscle contractions or staring spells?",
+        "closed": "Have you ever lost consciousness associated with violent and sustained muscle contractions or had an absence episode?",
+        "targets": [
+          "Has lost consciousness associated with violent and sustained muscle contractions or had an absence episode"
+        ]
+      },
+      "Pain related to consultation reason": {
+        "open": "Can you describe the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Do you have pain that is related to your reason for consulting?",
+        "targets": [
+          "Has pain somewhere, related to reason for consulting"
+        ]
+      },
+      "Pain sensitivity": {
+        "open": "Can you describe how sensitive your pain feels—does it hurt even when touched lightly?",
+        "closed": "Is your pain sensitive to touch?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "Burning pain": {
+        "open": "How would you describe the quality of your pain? Does it feel like burning or heat?",
+        "closed": "Is your pain burning in nature?",
+        "targets": [
+          "Pain is burning"
+        ]
+      },
+      "Pain in right little finger": {
+        "open": "Could you describe where exactly you're feeling pain in your hand, particularly the little finger on the right side?",
+        "closed": "Do you feel pain in your right little finger?",
+        "targets": [
+          "Feels pain in finger (little finger)(R)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-038",
+    "age": 30,
+    "sex": "M",
+    "chief_complaint": "I have pain related to my reason for consulting.",
+    "diagnosis": "URTI",
+    "aius": [
+      "Has had contact with a person with similar symptoms in the past 2 weeks",
+      "Lives with 4 or more people",
+      "Has pain related to reason for consulting",
+      "Pain is heavy",
+      "Feels pain in cheek(R)",
+      "Feels pain in cheek(L)",
+      "Feels pain in temple(R)",
+      "Feels pain in temple(L)",
+      "Pain intensity 7",
+      "Pain does not radiate to another location",
+      "Pain is precisely located at 4",
+      "Pain appeared instantly",
+      "Has cough that produces colored or more abundant sputum than usual",
+      "Has fever",
+      "Has sore throat",
+      "Has nasal congestion or a clear runny nose",
+      "Has cough",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "pain_related_to_consulting": {
+        "open": "Could you tell me more about the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to the reason you came to see me?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "pain_characterization_heavy": {
+        "open": "Can you describe the quality of your pain? What does it feel like?",
+        "closed": "Is the pain feeling heavy?",
+        "targets": [
+          "Pain is heavy"
+        ]
+      },
+      "pain_location_cheek_right": {
+        "open": "Could you describe where exactly you're feeling the pain in your cheek on the right side?",
+        "closed": "Are you feeling pain specifically in your right cheek?",
+        "targets": [
+          "Feels pain in cheek(R)"
+        ]
+      },
+      "pain_location_cheek_left": {
+        "open": "Can you describe the location of the pain you're feeling in your left cheek?",
+        "closed": "Are you feeling pain in your left cheek?",
+        "targets": [
+          "Feels pain in cheek(L)"
+        ]
+      },
+      "pain_location_temple_right": {
+        "open": "Could you tell me more about the pain you're feeling in your right temple?",
+        "closed": "Are you feeling pain in your right temple?",
+        "targets": [
+          "Feels pain in temple(R)"
+        ]
+      },
+      "pain_location_temple_left": {
+        "open": "Can you describe the pain you're feeling in your left temple?",
+        "closed": "Are you feeling pain in your left temple?",
+        "targets": [
+          "Feels pain in temple(L)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-039",
+    "age": 27,
+    "sex": "F",
+    "chief_complaint": "I have pain that is burning and located in my throat, which started suddenly.",
+    "diagnosis": "Viral pharyngitis",
+    "aius": [
+      "Has had contact with a person with similar symptoms in the past 2 weeks",
+      "Coughs up blood",
+      "Attends or works in a daycare",
+      "Has pain somewhere related to reason for consulting",
+      "Pain is burning",
+      "Pain in tonsil(R)",
+      "Pain in tonsil(L)",
+      "Pain in palate",
+      "Pain in pharynx",
+      "Pain intensity 6",
+      "Pain does not radiate to another location",
+      "Pain is precisely located at 7",
+      "Pain appeared instantly",
+      "Smokes cigarettes",
+      "Has fever",
+      "Has cough",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "Coughing up blood": {
+        "open": "Could you tell me more about any blood you've been coughing up?",
+        "closed": "Have you been coughing up blood?",
+        "targets": [
+          "Coughs up blood"
+        ]
+      },
+      "Pain related to consultation": {
+        "open": "Can you describe the pain you're feeling and how it relates to why you came in today?",
+        "closed": "Do you have pain somewhere related to your reason for consulting?",
+        "targets": [
+          "Has pain somewhere related to reason for consulting"
+        ]
+      },
+      "Burning pain": {
+        "open": "Can you describe the quality of your pain? Is it burning, sharp, or something else?",
+        "closed": "Is your pain burning?",
+        "targets": [
+          "Pain is burning"
+        ]
+      },
+      "Pain in right tonsil": {
+        "open": "Could you point to where exactly you're feeling pain in your throat?",
+        "closed": "Is the pain located in your right tonsil?",
+        "targets": [
+          "Pain in tonsil(R)"
+        ]
+      },
+      "Pain in left tonsil": {
+        "open": "Can you describe the location and nature of the pain in your throat?",
+        "closed": "Is the pain located in your left tonsil?",
+        "targets": [
+          "Pain in tonsil(L)"
+        ]
+      },
+      "Pain in palate": {
+        "open": "Where exactly in your mouth or throat do you feel the pain?",
+        "closed": "Is the pain located in your palate?",
+        "targets": [
+          "Pain in palate"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-040",
+    "age": 33,
+    "sex": "M",
+    "chief_complaint": "I have swelling in my legs and feet.",
+    "diagnosis": "Localized edema",
+    "aius": [
+      "Has heart valve issue",
+      "Has pain related to reason for consulting",
+      "Pain is tedious",
+      "Pain is sensitive",
+      "Pain is tugging",
+      "Pain is heavy",
+      "Feels pain in ankle(R)",
+      "Feels pain in ankle(L)",
+      "Feels pain in thigh(R)",
+      "Feels pain in thigh(L)",
+      "Feels pain in dorsal aspect of the foot(R)",
+      "Pain intensity 7",
+      "No pain radiation to another location",
+      "Pain location precision 5",
+      "Pain onset speed 5",
+      "Has gained weight recently",
+      "Has heart failure",
+      "Has liver cirrhosis",
+      "Has had surgery to remove lymph nodes",
+      "Takes calcium channel blockers",
+      "Has swelling in one or more areas of the body",
+      "Swelling located in ankle(R)",
+      "Swelling located in ankle(L)",
+      "Swelling located in thigh(R)",
+      "Swelling located in thigh(L)",
+      "Swelling located in dorsal aspect of the foot(L)",
+      "Has endocrine disease or hormone dysfunction",
+      "Has known kidney problem resulting in inability to retain proteins",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "pain_related_to_consulting": {
+        "open": "Could you tell me more about the pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to the reason you came to see me?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "pain_tedious": {
+        "open": "Can you describe how the pain feels—does it feel like a constant, dull ache or something else?",
+        "closed": "Does your pain feel tedious?",
+        "targets": [
+          "Pain is tedious"
+        ]
+      },
+      "pain_sensitive": {
+        "open": "How would you describe the sensation of the pain? Is it sharp, tender, or sensitive to touch?",
+        "closed": "Is your pain sensitive?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "pain_tugging": {
+        "open": "Can you describe the quality of the pain—does it feel like pulling, tugging, or stretching?",
+        "closed": "Does your pain feel tugging?",
+        "targets": [
+          "Pain is tugging"
+        ]
+      },
+      "pain_heavy": {
+        "open": "How would you describe the sensation of the pain—does it feel heavy, pressing, or weighted?",
+        "closed": "Does your pain feel heavy?",
+        "targets": [
+          "Pain is heavy"
+        ]
+      },
+      "pain_in_ankle_right": {
+        "open": "Could you describe where exactly you're feeling the pain in your ankle on the right side?",
+        "closed": "Do you feel pain specifically in your right ankle?",
+        "targets": [
+          "Feels pain in ankle(R)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-041",
+    "age": 33,
+    "sex": "F",
+    "chief_complaint": "I have a sore throat.",
+    "diagnosis": "Bronchitis",
+    "aius": [
+      "Has pain related to reason for consulting",
+      "Pain is burning",
+      "Pain is in lower chest",
+      "Pain is on side of the chest(R)",
+      "Pain is in pharynx",
+      "Pain is in breast(R)",
+      "Pain is in breast(L)",
+      "Pain intensity 5",
+      "No pain radiating to another location",
+      "Pain location precision 4",
+      "Pain appeared 2 minutes ago",
+      "Has cough with colored or more abundant sputum than usual",
+      "Smokes cigarettes",
+      "Has fever",
+      "Has sore throat",
+      "Has chronic obstructive pulmonary disease (COPD)",
+      "Has cough",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "pain_location_chest": {
+        "open": "Could you describe where exactly you feel the pain in your chest?",
+        "closed": "Is the pain located in your lower chest?",
+        "targets": [
+          "Pain is in lower chest"
+        ]
+      },
+      "pain_location_side_chest": {
+        "open": "Can you tell me more about where on your chest the pain is located?",
+        "closed": "Is the pain on the right side of your chest?",
+        "targets": [
+          "Pain is on side of the chest(R)"
+        ]
+      },
+      "pain_location_pharynx": {
+        "open": "Could you describe the location of the pain you're feeling in your throat?",
+        "closed": "Is the pain located in your pharynx?",
+        "targets": [
+          "Pain is in pharynx"
+        ]
+      },
+      "pain_location_breast": {
+        "open": "Can you describe where in your breast area you're feeling the pain?",
+        "closed": "Is the pain in your right breast?",
+        "targets": [
+          "Pain is in breast(R)"
+        ]
+      },
+      "pain_character_burning": {
+        "open": "How would you describe the quality of your pain? Is it sharp, dull, or something else?",
+        "closed": "Is your pain burning in nature?",
+        "targets": [
+          "Pain is burning"
+        ]
+      },
+      "pain_related_to_consultation": {
+        "open": "Could you tell me more about the pain you're experiencing and how it relates to why you came to see me today?",
+        "closed": "Is the pain related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-042",
+    "age": 31,
+    "sex": "F",
+    "chief_complaint": "I am feeling nauseous and have been experiencing worsening chest pain that radiates to my shoulders and arms, especially with exertion.",
+    "diagnosis": "Unstable angina",
+    "aius": [
+      "Symptoms have worsened over the last 2 weeks and progressively less effort is required to cause them",
+      "Has pain related to reason for consulting",
+      "Pain is tedious",
+      "Pain is heavy",
+      "Pain is exhausting",
+      "Feels pain on the right side of the chest",
+      "Feels pain on the left side of the chest",
+      "Feels pain in the trachea",
+      "Feels pain in the right triceps",
+      "Feels pain in the left shoulder",
+      "Pain intensity is 6",
+      "Pain radiates to the right biceps",
+      "Pain radiates to the left biceps",
+      "Pain radiates to the thoracic spine",
+      "Pain radiates to the right shoulder",
+      "Pain radiates to the left shoulder",
+      "Pain location is precise at level 8",
+      "Pain appeared gradually with a speed of 6",
+      "Experiences shortness of breath or difficulty breathing significantly",
+      "Has diabetes",
+      "Is significantly overweight compared to people of the same height",
+      "Has high cholesterol or takes medications to treat high cholesterol",
+      "Smokes cigarettes",
+      "Constantly feels fatigued or has non-restful sleep",
+      "Has high blood pressure or takes medications to treat high blood pressure",
+      "Has had a heart attack or has angina (chest pain)",
+      "Exercises regularly, 4 times per week or more",
+      "Feels nauseous or feels like vomiting",
+      "No recent travel abroad",
+      "Has symptoms increased with physical exertion but alleviated with rest",
+      "Has close family members who had a cardiovascular disease problem before age 50"
+    ],
+    "info_points": {
+      "worsening symptoms": {
+        "open": "Could you describe how your symptoms have changed over the past two weeks?",
+        "closed": "Have your symptoms worsened over the last two weeks?",
+        "targets": [
+          "Symptoms have worsened over the last 2 weeks and progressively less effort is required to cause them"
+        ]
+      },
+      "pain related to consultation": {
+        "open": "Can you tell me more about any pain you're experiencing and how it relates to your reason for coming in today?",
+        "closed": "Is the pain you're feeling related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "tedious pain": {
+        "open": "How would you describe the quality of your pain? Does it feel draining or monotonous?",
+        "closed": "Does your pain feel tedious?",
+        "targets": [
+          "Pain is tedious"
+        ]
+      },
+      "heavy pain": {
+        "open": "Can you describe the sensation of your pain? Does it feel like a weight or pressure?",
+        "closed": "Does your pain feel heavy?",
+        "targets": [
+          "Pain is heavy"
+        ]
+      },
+      "exhausting pain": {
+        "open": "How does the pain affect your energy levels? Does it leave you feeling drained or fatigued?",
+        "closed": "Does your pain feel exhausting?",
+        "targets": [
+          "Pain is exhausting"
+        ]
+      },
+      "right-sided chest pain": {
+        "open": "Can you describe where exactly you feel the pain in your chest? Is it on one side, both sides, or spreading?",
+        "closed": "Do you feel pain specifically on the right side of your chest?",
+        "targets": [
+          "Feels pain on the right side of the chest"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-043",
+    "age": 59,
+    "sex": "M",
+    "chief_complaint": "I have pain in my back of the neck, ankles, and shoulders, along with shortness of breath and fatigue.",
+    "diagnosis": "SLE",
+    "aius": [
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Pain is sharp",
+      "Pain is in back of the neck",
+      "Pain is in ankle(R)",
+      "Pain is in ankle(L)",
+      "Pain is in shoulder(R)",
+      "Pain is in shoulder(L)",
+      "Pain intensity 7",
+      "No pain radiates to another location",
+      "Pain location precision 6",
+      "Pain appeared 2 minutes ago",
+      "Has shortness of breath or difficulty breathing",
+      "Smokes cigarettes",
+      "Feels fatigued or has non-restful sleep",
+      "Consulting due to high blood pressure",
+      "Has skin lesions, redness, or problems related to condition",
+      "Rash is red",
+      "Lesions do not peel off",
+      "Rash is swollen",
+      "Affected region is in cheek(R)",
+      "Affected region is in nose",
+      "Lesion(s) are larger than 1cm",
+      "Itching severity 2",
+      "No recent travel abroad",
+      "Has painful mouth ulcers or sores"
+    ],
+    "info_points": {
+      "pain_related_to_consulting": {
+        "open": "Could you describe any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "pain_sensitivity": {
+        "open": "Can you describe how sensitive or tender the pain feels when touched or moved?",
+        "closed": "Is the pain sensitive to touch?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "pain_sharp_quality": {
+        "open": "How would you describe the quality of the pain? Does it feel sharp, stabbing, or like a knife?",
+        "closed": "Is the pain sharp?",
+        "targets": [
+          "Pain is sharp"
+        ]
+      },
+      "neck_pain_location": {
+        "open": "Can you point to where exactly you feel the pain in the back of your neck?",
+        "closed": "Is the pain located at the back of your neck?",
+        "targets": [
+          "Pain is in back of the neck"
+        ]
+      },
+      "ankle_right_pain_location": {
+        "open": "Could you describe where in your right ankle you're feeling pain?",
+        "closed": "Is the pain in your right ankle?",
+        "targets": [
+          "Pain is in ankle(R)"
+        ]
+      },
+      "ankle_left_pain_location": {
+        "open": "Can you tell me more about where in your left ankle you're experiencing pain?",
+        "closed": "Is the pain in your left ankle?",
+        "targets": [
+          "Pain is in ankle(L)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-044",
+    "age": 63,
+    "sex": "M",
+    "chief_complaint": "I have lost my sense of smell.",
+    "diagnosis": "Chronic rhinosinusitis",
+    "aius": [
+      "Has pain related to reason for consulting",
+      "Pain is burning",
+      "Pain is sharp",
+      "Pain in mouth",
+      "Pain in cheek(R)",
+      "Pain in nose",
+      "Pain in eye(R)",
+      "Pain in temple(L)",
+      "Pain intensity 6",
+      "Pain radiates to back of head",
+      "Pain located precisely 8",
+      "Pain appeared instantly",
+      "Smokes cigarettes",
+      "Lost sense of smell",
+      "Had a cold in the last 2 weeks",
+      "Had pneumonia",
+      "Has nasal polyps",
+      "Has asthma or has used bronchodilator in the past",
+      "Has gastroesophageal reflux",
+      "Has nasal congestion or clear runny nose",
+      "Has greenish or yellowish nasal discharge",
+      "Has cough",
+      "No recent travel abroad",
+      "More likely to develop common allergies than the general population"
+    ],
+    "info_points": {
+      "Pain related to consulting": {
+        "open": "Could you tell me more about any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "Burning pain": {
+        "open": "Can you describe the quality of your pain? For example, does it feel like burning, stabbing, or throbbing?",
+        "closed": "Is your pain burning in nature?",
+        "targets": [
+          "Pain is burning"
+        ]
+      },
+      "Sharp pain": {
+        "open": "Could you describe the character of your pain? Does it feel sharp, dull, aching, or something else?",
+        "closed": "Is your pain sharp?",
+        "targets": [
+          "Pain is sharp"
+        ]
+      },
+      "Pain in mouth": {
+        "open": "Can you describe where exactly you're feeling pain in your mouth and what it feels like?",
+        "closed": "Do you have pain in your mouth?",
+        "targets": [
+          "Pain in mouth"
+        ]
+      },
+      "Pain in cheek(R)": {
+        "open": "Could you point to the area where you're feeling pain in your cheek on the right side?",
+        "closed": "Is there pain in your right cheek?",
+        "targets": [
+          "Pain in cheek(R)"
+        ]
+      },
+      "Pain in nose": {
+        "open": "Can you describe where in your nose you're feeling pain and whether it's constant or intermittent?",
+        "closed": "Do you have pain in your nose?",
+        "targets": [
+          "Pain in nose"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-045",
+    "age": 108,
+    "sex": "M",
+    "chief_complaint": "I have pain related to my reason for consulting.",
+    "diagnosis": "PSVT",
+    "aius": [
+      "Has anxiety",
+      "Drinks coffee or tea regularly",
+      "Has pain related to reason for consulting",
+      "Pain is haunting",
+      "Pain is a pulse",
+      "Pain is in temple(L)",
+      "Pain intensity 5",
+      "No pain radiates to another location",
+      "Pain location precision 7",
+      "Pain appearance speed 5",
+      "Feels lightheaded and dizzy or feels like about to faint",
+      "Feels heart is beating fast (racing), irregularly (missing a beat) or feels palpitations",
+      "No recent travel abroad",
+      "Recently took decongestants or other substances with stimulant effects"
+    ],
+    "info_points": {
+      "Pain related to consulting": {
+        "open": "Could you tell me more about any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "Pain is haunting": {
+        "open": "Can you describe the quality of your pain—does it feel persistent, nagging, or like it's always there?",
+        "closed": "Does your pain feel haunting or constant?",
+        "targets": [
+          "Pain is haunting"
+        ]
+      },
+      "Pain is a pulse": {
+        "open": "How would you describe the nature of your pain—does it beat or throb in rhythm with your heartbeat?",
+        "closed": "Is your pain pulsating or throbbing?",
+        "targets": [
+          "Pain is a pulse"
+        ]
+      },
+      "Pain is in temple(L)": {
+        "open": "Can you point to exactly where you feel the pain in your head, and does it seem to be on one side, like the left temple?",
+        "closed": "Is the pain located in your left temple?",
+        "targets": [
+          "Pain is in temple(L)"
+        ]
+      },
+      "Pain intensity 5": {
+        "open": "On a scale from 0 to 10, where 0 is no pain and 10 is the worst possible pain, how would you rate your current pain level?",
+        "closed": "Would you say your pain is a 5 out of 10?",
+        "targets": [
+          "Pain intensity 5"
+        ]
+      },
+      "No pain radiates": {
+        "open": "Have you noticed the pain spreading or moving to other parts of your body, like your arm or jaw?",
+        "closed": "Does your pain radiate to another location?",
+        "targets": [
+          "No pain radiates to another location"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-046",
+    "age": 31,
+    "sex": "F",
+    "chief_complaint": "I have a high pitched sound when breathing in.",
+    "diagnosis": "Larygospasm",
+    "aius": [
+      "Has cold in the last 2 weeks",
+      "Has high pitched sound when breathing in",
+      "No recent travel abroad",
+      "Is exposed to secondhand cigarette smoke on a daily basis"
+    ],
+    "info_points": {
+      "High-pitched breathing sound": {
+        "open": "Could you describe the sound you hear when you breathe in? Is it sharp or whistling?",
+        "closed": "Do you hear a high-pitched sound when breathing in?",
+        "targets": [
+          "Has high pitched sound when breathing in"
+        ]
+      },
+      "Recent cold": {
+        "open": "Can you tell me about any recent respiratory symptoms you've had, like congestion or coughing?",
+        "closed": "Have you had a cold within the past two weeks?",
+        "targets": [
+          "Has cold in the last 2 weeks"
+        ]
+      },
+      "No recent international travel": {
+        "open": "Could you describe any recent travel you've done, especially outside the country?",
+        "closed": "Have you traveled abroad in the last four weeks?",
+        "targets": [
+          "No recent travel abroad"
+        ]
+      },
+      "Daily secondhand smoke exposure": {
+        "open": "Can you describe your environment at home or work—do you regularly come into contact with cigarette smoke?",
+        "closed": "Are you exposed to secondhand cigarette smoke every day?",
+        "targets": [
+          "Is exposed to secondhand cigarette smoke on a daily basis"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-047",
+    "age": 18,
+    "sex": "M",
+    "chief_complaint": "I have noticed weakness in both arms and both legs.",
+    "diagnosis": "Guillain-Barré syndrome",
+    "aius": [
+      "Has recent viral infection",
+      "Has facial muscle and/or eye weakness",
+      "Has bilateral arm and/or leg weakness",
+      "Has numbness, loss of sensation, or tingling in both arms and legs and around mouth",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "facial_weakness": {
+        "open": "Could you describe any weakness you've noticed in your facial muscles or eyes?",
+        "closed": "Have you experienced any facial muscle or eye weakness?",
+        "targets": [
+          "Has facial muscle and/or eye weakness"
+        ]
+      },
+      "bilateral_weakness": {
+        "open": "Can you tell me more about any weakness you've felt in both your arms and legs?",
+        "closed": "Do you have weakness in both arms and/or both legs?",
+        "targets": [
+          "Has bilateral arm and/or leg weakness"
+        ]
+      },
+      "numbness_tingling": {
+        "open": "Could you describe any numbness, loss of sensation, or tingling you've experienced in your arms, legs, and around your mouth?",
+        "closed": "Have you had numbness, loss of sensation, or tingling in both arms, legs, and around your mouth?",
+        "targets": [
+          "Has numbness, loss of sensation, or tingling in both arms and legs and around mouth"
+        ]
+      },
+      "viral_infection": {
+        "open": "Can you describe any recent viral infections you've had in the past few weeks?",
+        "closed": "Have you recently had a viral infection?",
+        "targets": [
+          "Has recent viral infection"
+        ]
+      },
+      "no_travel": {
+        "open": "Could you tell me about any travel you've done abroad in the last four weeks?",
+        "closed": "Have you traveled out of the country in the last 4 weeks?",
+        "targets": [
+          "No recent travel abroad"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-048",
+    "age": 43,
+    "sex": "F",
+    "chief_complaint": "I am feeling nauseous and have severe pain that feels like a knife stroke in my chest, radiating to my back, with a sensation of being haunted and sickening.",
+    "diagnosis": "Boerhaave",
+    "aius": [
+      "Has pain related to reason for consulting",
+      "Pain is heartbreaking",
+      "Pain is haunting",
+      "Pain is a knife stroke",
+      "Pain is violent",
+      "Pain is sickening",
+      "Pain is in lower chest",
+      "Pain is in flank(R)",
+      "Pain is in upper chest",
+      "Pain is in hypochondrium(R)",
+      "Pain intensity 8",
+      "Pain radiates to scapula(R)",
+      "Pain radiates to scapula(L)",
+      "Pain location precision 4",
+      "Pain onset speed 10",
+      "Has shortness of breath or difficulty breathing",
+      "Has nausea or feels like vomiting",
+      "No recent travel abroad",
+      "Has vomited blood or something resembling coffee beans"
+    ],
+    "info_points": {
+      "Pain related to consulting": {
+        "open": "Could you tell me more about any pain you're experiencing and how it relates to why you came in today?",
+        "closed": "Is the pain you're feeling connected to the reason you're here for your visit?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "Heartbreaking pain": {
+        "open": "Can you describe what 'heartbreaking' means to you in terms of how the pain feels?",
+        "closed": "Is the pain you're feeling like it's breaking your heart?",
+        "targets": [
+          "Pain is heartbreaking"
+        ]
+      },
+      "Haunting pain": {
+        "open": "When you say the pain is haunting, could you explain what that sensation is like for you?",
+        "closed": "Is the pain you're experiencing feeling haunting or lingering?",
+        "targets": [
+          "Pain is haunting"
+        ]
+      },
+      "Knife stroke pain": {
+        "open": "When you describe the pain as a knife stroke, can you elaborate on how that feels physically?",
+        "closed": "Does the pain feel like a sudden sharp stab, like a knife stroke?",
+        "targets": [
+          "Pain is a knife stroke"
+        ]
+      },
+      "Violent pain": {
+        "open": "Could you describe what you mean by 'violent' when talking about your pain?",
+        "closed": "Is the pain you're experiencing intense and forceful, like a violent sensation?",
+        "targets": [
+          "Pain is violent"
+        ]
+      },
+      "Sickening pain": {
+        "open": "When you say the pain is sickening, can you explain what aspects of it make you feel this way?",
+        "closed": "Does the pain make you feel nauseous or unwell?",
+        "targets": [
+          "Pain is sickening"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ddx-049",
+    "age": 36,
+    "sex": "M",
+    "chief_complaint": "I have sharp, sensitive pain in both ears that started quickly and is rated a 6 out of 10.",
+    "diagnosis": "Acute otitis media",
+    "aius": [
+      "Has pain related to reason for consulting",
+      "Pain is sensitive",
+      "Pain is sharp",
+      "Pain in ear(R)",
+      "Pain in ear(L)",
+      "Pain intensity 6",
+      "No pain radiation",
+      "Pain location precision 9",
+      "Pain onset speed 3",
+      "Has cough",
+      "No recent travel abroad"
+    ],
+    "info_points": {
+      "pain_location_related_to_consult": {
+        "open": "Could you tell me more about where you're feeling pain and how it relates to your reason for coming in today?",
+        "closed": "Is the pain you're experiencing related to your reason for consulting?",
+        "targets": [
+          "Has pain related to reason for consulting"
+        ]
+      },
+      "pain_sensitivity": {
+        "open": "Can you describe how sensitive the pain feels—does it hurt when you touch or move the area?",
+        "closed": "Is the pain sensitive to touch?",
+        "targets": [
+          "Pain is sensitive"
+        ]
+      },
+      "pain_quality_sharp": {
+        "open": "How would you describe the quality of the pain—does it feel sharp, like a stabbing sensation?",
+        "closed": "Is the pain sharp?",
+        "targets": [
+          "Pain is sharp"
+        ]
+      },
+      "pain_location_ear_right": {
+        "open": "Can you describe the pain in your right ear—where exactly do you feel it and what does it feel like?",
+        "closed": "Do you have pain in your right ear?",
+        "targets": [
+          "Pain in ear(R)"
+        ]
+      },
+      "pain_location_ear_left": {
+        "open": "Can you describe the pain in your left ear—where exactly do you feel it and what does it feel like?",
+        "closed": "Do you have pain in your left ear?",
+        "targets": [
+          "Pain in ear(L)"
+        ]
+      },
+      "pain_intensity_scale": {
+        "open": "On a scale from 0 to 10, with 0 being no pain and 10 being the worst possible pain, how would you rate your current pain?",
+        "closed": "Would you say your pain is a 6 out of 10?",
+        "targets": [
+          "Pain intensity 6"
+        ]
+      }
+    }
+  }
+]

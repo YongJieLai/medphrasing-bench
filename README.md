@@ -38,25 +38,38 @@
 
 医生 agent 分两组，仅 system prompt 注入"开放式提问"vs"封闭式提问"策略，测端到端：溢出总量、信息覆盖率、最终诊断准确率。
 
-## MVP 结果（阶段 A）
+## 实验结果（阶段 A，DDxPlus 50 例）
 
-2 个样例病例 × 6 信息点 × 2 措辞 × 3 采样（n=36 配对）：
+**数据**：DDxPlus（NeurIPS 2022 自动鉴别诊断数据集，CC-BY）验证集随机抽 50 例，用 qwen-flash 将结构化证据编码转换为自然语言 AIU，并为每例生成 6 个信息点（开/闭措辞）。数据在 `data/ddxplus_50.json`，构建脚本 `scripts/build_cases.py`。
 
-| 措辞 | 平均溢出 AIU | 零溢出占比 |
+**结果**（50 例 × 6 信息点 × 2 措辞，n=289 配对；qwen-flash）：
+
+| 措辞 | 平均溢出 AIU | 中位数 |
 |---|---|---|
-| 开放式 | **2.64** | 6% (2/36) |
-| 封闭式 | **0.81** | 64% (23/36) |
+| 开放式 | **6.997** | 6 |
+| 封闭式 | **3.630** | 1 |
 
-配对 t 检验：差值均值 1.83，**t = 4.32，p < 0.001**。方向验证成功。
+- 配对 t 检验：差值均值 3.37，**t = 12.02，p = 3.1e-27**
+- Wilcoxon 符号秩检验：**p = 5.8e-27**
+- open > closed 的配对占比 **75%**（218/289）；病例级 **47/50** 病例 open > closed
 
-> ⚠️ 当前为样例病例占位验证，用于证明管线可行与信号存在；结论需在更大真实病例集上复现。
+**H1（措辞→溢出）在真实病例集上强力成立。**
+
+> ⚠️ 局限：①患者模拟器/提取器均为 qwen-flash，需多模型鲁棒性验证；②信息点选取偏"前 6 个症状"，需更聚焦的选点策略；③AIU 标注未经临床专家审核；④单次采样（repeat=1）。
 
 ## 快速开始
 
 ```bash
 pip install -r requirements.txt
 cp .env.example .env        # 填入 API key（.env 已 gitignore）
-python experiments/phaseA_phrasing.py --cases cap-01 --repeat 3
+
+# 直接用已构建的 50 例跑阶段 A
+python experiments/phaseA_phrasing.py --data data/ddxplus_50.json --repeat 1
+# 统计检验
+python scripts/analyze.py outputs/phaseA_ddxplus_50.csv
+
+# （可选）从 DDxPlus 重新构建病例库
+python scripts/build_cases.py --n 50 --seed 42 --out data/ddxplus_50.json
 ```
 
 ## 目录结构
@@ -69,17 +82,23 @@ src/doctor.py                 # 医生 agent（阶段 B）
 src/phrasing.py               # 措辞展开
 src/metrics.py                # AIU 提取 + 溢出测量
 src/llm.py                    # 统一 LLM 客户端
+scripts/build_cases.py        # 从 DDxPlus 构建病例库
+scripts/analyze.py            # 配对统计检验
+data/ddxplus_50.json          # 已构建的 50 例（可复现）
 experiments/phaseA_phrasing.py  # 阶段 A：措辞对照
+experiments/phaseB_endtoend.py  # 阶段 B：端到端
 outputs/                      # 实验输出（gitignore）
 ```
 
 ## 下一步
 
-- [ ] 扩充真实病例集（DDxPlus / MedQA 子集，或人工标注 AIU）
-- [ ] 溢出机制 grounding：用 MedDialog 真实对话验证"开放式→多披露"的临床依据
+- [ ] 多模型鲁棒性（患者/提取器换 qwen-plus / deepseek / glm 是否稳健）
+- [ ] 信息点选取策略（选有区分度的，而非前 N 个症状）
+- [ ] repeat>1 降噪 + 置信区间
 - [ ] 防泄题约束（溢出不得直接点破诊断）
 - [ ] 阶段 B 端到端 + 诊断准确率
-- [ ] 多模型鲁棒性（患者/医生换不同 LLM 是否稳健）
+- [ ] AIU 标注临床审核
+- [ ] 溢出机制的临床依据（MedDialog 真实对话验证）
 
 ## 参考
 

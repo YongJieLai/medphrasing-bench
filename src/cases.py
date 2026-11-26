@@ -10,7 +10,9 @@ AIU（Atomic Information Unit）是"可独立验证的最小事实"，是测量"
 """
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
+from pathlib import Path
 
 
 @dataclass
@@ -20,6 +22,25 @@ class Case:
     diagnosis: str                  # 金标准诊断（仅评测用，不给 agent）
     aius: list[str]                 # 全部 AIU（患者 ground-truth 全集）
     info_points: dict[str, dict] = field(default_factory=dict)
+    age: int | None = None
+    sex: str | None = None
+
+
+def load_cases(path: str | Path) -> list[Case]:
+    """从 JSON 文件加载病例（scripts/build_cases.py 的输出格式）。"""
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    return [
+        Case(
+            id=d["id"],
+            chief_complaint=d["chief_complaint"],
+            diagnosis=d["diagnosis"],
+            aius=d["aius"],
+            info_points=d.get("info_points", {}),
+            age=d.get("age"),
+            sex=d.get("sex"),
+        )
+        for d in data
+    ]
 
 
 # ---- 样例病例（占位，后续替换为真实/更多病例） ----

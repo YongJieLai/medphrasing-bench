@@ -1,4 +1,5 @@
 # 模型与端点配置。api key 通过环境变量注入（见 .env.example）
+# 用户预算有限，先统一用最便宜的 qwen-flash，跑通后按需升级。
 providers:
   qwen:
     base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
@@ -7,14 +8,16 @@ providers:
     base_url: https://api.deepseek.com/v1
     api_key_env: DEEPSEEK_API_KEY
 
-# 各角色使用的模型
 roles:
-  patient:      # 患者模拟器：需要高质量、稳定遵循行为规则
+  patient:      # 患者模拟器
     provider: qwen
-    model: qwen-plus
+    model: qwen-flash
   doctor:       # 医生 agent
     provider: qwen
-    model: qwen-plus
-  extractor:    # 信息提取器：从患者回答中抽取已披露的原子信息单元（AIU）
+    model: qwen-flash
+  extractor:    # 信息提取器（AIU 抽取）
+    provider: qwen
+    model: qwen-flash
+  builder:      # 数据构建（AIU 转换 / 措辞生成）
     provider: qwen
     model: qwen-flash

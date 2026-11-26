@@ -1,4 +1,4 @@
-"""信息提取与溢出指标。
+"""信息提取与溢出指标（英文版）。
 
 用 extractor（LLM）从患者回答中抽取"被披露的 AIU"，再与 ground-truth AIU 匹配，
 从而区分：意图命中（回答被问到的） vs 溢出（顺带披露的其它 AIU）。
@@ -11,10 +11,9 @@ import re
 from .llm import chat
 from .cases import Case
 
-_EXTRACT_SYSTEM = """你是信息提取器。给你一段患者的回答，和一份"原子信息单元(AIU)"列表。
-请判断列表中哪些 AIU 在这段回答里被披露了——只要语义被提及即算披露，允许同义改写。
-只输出一个 JSON 对象，格式：{"disclosed": ["AIU原文1", "AIU原文2"]}
-disclosed 里只能包含列表中原样存在、且确实被披露的条目，不要新增列表外的内容，不要解释。"""
+_EXTRACT_SYSTEM = """You are an information extractor. Given a patient's answer and a list of "atomic information units" (AIUs), determine which AIUs are disclosed in the answer — semantic mention counts, paraphrasing is allowed.
+Output ONLY one JSON object of the form: {"disclosed": ["AIU text 1", "AIU text 2"]}
+"disclosed" may only contain AIUs that (a) appear verbatim in the given list and (b) are actually disclosed. Do not add anything outside the list, and do not explain."""
 
 
 def extract_disclosed(answer: str, case: Case) -> set[str]:
@@ -22,7 +21,7 @@ def extract_disclosed(answer: str, case: Case) -> set[str]:
     if not answer.strip():
         return set()
     aiu_list = "\n".join(f"- {a}" for a in case.aius)
-    user = f"【患者回答】\n{answer}\n\n【AIU 列表】\n{aiu_list}"
+    user = f"【Patient answer】\n{answer}\n\n【AIU list】\n{aiu_list}"
     raw = chat("extractor", [
         {"role": "system", "content": _EXTRACT_SYSTEM},
         {"role": "user", "content": user},
@@ -40,14 +39,7 @@ def extract_disclosed(answer: str, case: Case) -> set[str]:
 
 
 def measure(answer: str, case: Case, targets: list[str]) -> dict:
-    """测量一轮回答的披露情况。
-
-    返回：
-      disclosed      : 本轮披露的全部 AIU
-      target_hits    : 意图内（被问到的）AIU
-      spillover      : 溢出（非意图、顺带披露的）AIU
-      spillover_count: 溢出数量
-    """
+    """测量一轮回答的披露情况。"""
     disclosed = extract_disclosed(answer, case)
     tset = set(targets)
     target_hits = disclosed & tset

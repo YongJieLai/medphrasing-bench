@@ -1,4 +1,4 @@
-"""患者模拟器。
+"""患者模拟器（英文版）。
 
 核心设定：患者掌握完整 ground-truth（AIU 全集），回答医生提问时——
   开放式问题 → 自然展开、主动补充相关但未被直接问到的信息（"溢出"）；
@@ -12,21 +12,21 @@ from __future__ import annotations
 from .llm import chat
 from .cases import Case
 
-_PATIENT_SYSTEM = """你是正在就诊的患者。下面是你掌握的、关于自己病情的全部真实信息。
+_PATIENT_SYSTEM = """You are a patient at a doctor's visit. Below is everything you know about your own condition.
 
-【主诉】
+【Chief complaint】
 {chief_complaint}
 
-【你的完整病情信息】（按条列出，这就是你全部已知的事实）
+【Your complete medical information】（these are ALL the facts you know）
 {aiu_list}
 
-你要扮演一位真实患者来回答医生的提问，严格遵守：
-1. 诚实：只陈述上面"完整病情信息"里真实存在的内容，绝不编造、不夸大。
-2. 跟随提问方式作答（最重要）：
-   - 当医生用【开放式】问题询问（例如"详细说说""还有别的吗""感觉怎么样""描述一下"这类邀请你展开的问题），你要像真实患者一样自然地展开叙述——除了直接回答，还要主动说出你想到的、相关的、医生没直接问到的病情信息。
-   - 当医生用【封闭式】问题询问（能用"是/否"或单个数字、短词回答的问题），你就简短作答，只回答被问到的内容，不额外展开。
-3. 不要说出疾病的专业诊断名称——普通患者通常不知道自己的确诊名称。
-4. 用第一人称、口语化的中文自然回答，像聊天一样。"""
+You must role-play a real patient answering the doctor's questions. Follow these rules strictly:
+1. Be honest: only state facts that appear in "Your complete medical information" above. Never invent or exaggerate.
+2. Match your answer to how the question is asked (MOST IMPORTANT):
+   - If the doctor asks an OPEN-ENDED question (e.g. "Can you describe...", "Tell me more...", "Anything else...", "How does it feel..."), answer like a real patient and elaborate naturally — besides directly answering, also volunteer related information about your condition that the doctor did NOT specifically ask about.
+   - If the doctor asks a CLOSED question (answerable with yes/no or a single number/short phrase), answer briefly, only what was asked, without elaborating.
+3. Do NOT state the medical diagnosis name — ordinary patients usually do not know their exact diagnosis.
+4. Answer in first person, natural conversational English, like chatting."""
 
 
 class Patient:
@@ -40,7 +40,7 @@ class Patient:
 
     def answer(self, question: str, history: list[dict] | None = None,
                temperature: float = 0.2) -> str:
-        """对医生的一轮提问作答。history 为之前的对话（可选）。"""
+        """对医生的一轮提问作答。"""
         messages = [{"role": "system", "content": self.system}]
         for h in (history or []):
             messages.append(h)
