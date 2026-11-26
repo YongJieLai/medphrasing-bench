@@ -34,15 +34,29 @@ REPO = Path(__file__).resolve().parent.parent
 
 AIU_SYSTEM = """You extract atomic information units (AIUs) from a patient's utterance in a medical dialogue. Use the doctor's question ONLY to resolve references (pronouns / ellipsis / "the ones").
 
-An AIU is a MINIMAL, independently-verifiable clinical fact. Rules:
-- Split compound statements into separate AIUs: "fever for 3 days, worse at night" -> "has fever", "duration 3 days", "worse at night".
-- Each AIU is ONE fact, phrased briefly in first person.
-- Label fidelity for each AIU:
+An AIU is ONE minimal, independently-verifiable clinical fact, phrased briefly in first person.
+
+SPLIT RULES (split aggressively, but do NOT split a symptom from its natural duration/severity modifier):
+- One AIU = ONE fact.
+- Split parallel facts: "nausea and vomiting" -> "has nausea", "has vomiting".
+- Split each symptom attribute that is clinically distinct: location, quality ("sharp"/"dull"/"stabbing"), duration, radiation, aggravating/relieving factors.
+  Example: "chest pain for two weeks, squeezing, radiating to left arm" -> "has chest pain", "duration two weeks", "squeezing quality", "radiating to left arm".
+  But "fever for 3 days" stays ONE AIU (fever + its natural duration).
+- Split each negated fact: "no blood in stool, no alcohol, no vomiting blood" -> "no blood in stool", "no alcohol", "no vomiting blood" (each fidelity "denied").
+- Multiple medications / allergies / family members / symptoms each get their own AIU.
+
+CONCRETENESS RULES:
+- NEVER use vague filler words: "stuff", "things", "issues", "traits", "problems". Name the specific thing the patient referred to.
+- Every AIU must have a clear subject/referent. A bare phrase like "mild case" is forbidden -> write "has mild [condition]" with the condition named.
+- Do NOT invent specifics the patient did not state. If underspecified, give the most specific faithful reading.
+
+Label fidelity for each AIU:
   * "definite": stated affirmatively and concretely
   * "fuzzy": hedged / uncertain ("maybe", "kind of", "not sure", "a little", "I think")
-  * "denied": the patient explicitly negates the doctor's asked fact. If the doctor asks "any fever?" and the patient says "no", extract {{"text": "no fever", "fidelity": "denied"}}.
-- IMPORTANT: a "no/only" answer still contains information. Extract both the negated fact (denied) AND any affirmed alternative (definite). Example: doctor "are you taking OTC medicines?" + patient "No, only the prescribed ones" -> [{{"text": "not taking OTC medicines", "fidelity": "denied"}}, {{"text": "taking prescribed medicines", "fidelity": "definite"}}].
-- Only if the utterance is a pure acknowledgment / greeting with zero clinical content, return an empty list.
+  * "denied": the patient explicitly negates a fact (e.g. doctor asks "any fever?" and patient says "no" -> {{"text": "no fever", "fidelity": "denied"}}).
+
+IMPORTANT: a "no/only" answer still contains information. Extract BOTH the negated fact (denied) AND any affirmed alternative (definite). Example: doctor "are you taking OTC medicines?" + patient "No, only the prescribed ones" -> [{{"text": "not taking OTC medicines", "fidelity": "denied"}}, {{"text": "taking prescribed medicines", "fidelity": "definite"}}].
+Only if the utterance is a pure acknowledgment / greeting with zero clinical content, return an empty list.
 
 DOCTOR'S QUESTION:
 \"\"\"
@@ -60,6 +74,8 @@ Output STRICT JSON only:
 DEDUP_SYSTEM = """You deduplicate a list of atomic information units (AIUs) collected across a patient-doctor dialogue.
 
 Merge AIUs that state the SAME fact (paraphrases, or a more specific restatement of an earlier fact). Keep the most specific / informative version, and the most confident fidelity (definite > fuzzy > denied). If two AIUs are related but distinct facts, keep both. A "denied" fact and its affirmed counterpart are DIFFERENT (keep both).
+
+IMPORTANT: Keep each AIU's original wording EXACTLY as given (first person, with subject "I"). Do NOT rewrite, paraphrase, or drop the subject. Only merge or delete whole items.
 
 Output the deduplicated list as a JSON array of objects, in first person.
 
