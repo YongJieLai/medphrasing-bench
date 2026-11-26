@@ -15,3 +15,8 @@ outputs/
 
 # os
 .DS_Store
+data/raw/
+
+# annotation intermediates (LLM-generated, reproducible via scripts)
+data/*.jsonl
+data/_test*.json

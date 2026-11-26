@@ -21,3 +21,9 @@ roles:
   builder:      # 数据构建（AIU 转换 / 措辞生成）
     provider: qwen
     model: qwen-flash
+  annotator:    # 主标注（量大，用便宜模型）
+    provider: qwen
+    model: qwen-flash
+  reviewer:     # 核对/金标准（强一档，交叉验证）
+    provider: qwen
+    model: qwen-plus
