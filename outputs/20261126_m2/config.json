@@ -1,0 +1,14 @@
+{
+  "task": "M2 校准模拟器 — 条件概率表 + 回放检验",
+  "data": "data/annot_all_flash.jsonl (5325 raw -> 5167 valid)",
+  "holdout": "200 段对话按 dialogue_id 划分, seed=42",
+  "train": "1154 对话 / 4405 条",
+  "replay": "200 对话 / 762 条",
+  "simulator": "ConditionalSimulator: P(relevance|openness), P(definiteness|leadingness), P(completeness|multi_barreled), Laplace alpha=1.0",
+  "bootstrap": 2000,
+  "real_ci": "cluster bootstrap (按对话重采样, 处理对话内相关, D3)",
+  "threshold": "三率差 ≤3pp 且 95% CI 重叠",
+  "params_file": "data/simulator_probs_20261126.json",
+  "date": "2026-11-26",
+  "seed_robustness": [1, 7, 123, 2024, 42]
+}
