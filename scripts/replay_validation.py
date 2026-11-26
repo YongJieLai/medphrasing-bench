@@ -209,6 +209,19 @@ def within_dialogue_slope(records: dict[int, list[dict]]) -> dict:
 # ----------------------------------------------------------------------
 # C1 / C2
 # ----------------------------------------------------------------------
+def clopper_pearson_ci(k: int, n: int, alpha: float = 0.05) -> tuple[float, float]:
+    """Clopper-Pearson 精确二项 95% CI（§7.5 M2b-1c 第 3 件事）。
+
+    k=事件数，n=样本数。用 Beta 分位数实现，无需正态近似，对小 n 稳健。
+    """
+    from scipy.stats import beta
+    if n <= 0:
+        return (float("nan"), float("nan"))
+    low = 0.0 if k <= 0 else float(beta.ppf(alpha / 2, k, n - k + 1))
+    high = 1.0 if k >= n else float(beta.ppf(1 - alpha / 2, k + 1, n - k))
+    return (low, high)
+
+
 def c1_layers(records: dict[int, list[dict]]) -> dict:
     """按措辞档分层的条件三率。"""
     spill_c = defaultdict(int); spill_t = defaultdict(int)
@@ -482,7 +495,12 @@ def main():
                      "sim1": sim1_res["rates"][k], "simabl": simabl_res["rates"][k],
                      "diff_pp": diff, "pass": diff <= 3.0}
 
-    # C1 分层（每层差 ≤ 5pp；n<50 标低置信不参与判定，§7.4 第3件）
+    # C1 分层结算（§7.5 M2b-1c 第 3 件事）
+    # 判定规则（写死，跑完不改）：
+    #   - n < 50 的层（strong n=32）：报 Clopper-Pearson 95% CI；模拟值落 CI 内 → 不可判；
+    #     落 CI 外 → 真超标（fail）。
+    #   - 其余层：|diff| ≤ 5pp → 通过；|diff| > 5pp 且模拟值不在真实 CP CI 内 → 未通过（fail）；
+    #     |diff| > 5pp 但模拟值仍在 CI 内 → 不可判（判据精度与抽样噪声同量级，不判超标）。
     c1_layers_out = {
         "spillover_by_openness": {},
         "agree_by_leadingness": {},
@@ -498,12 +516,23 @@ def main():
             real_v = real_c1[dim][layer]
             sim3_v = sim3_res["c1"][dim].get(layer, float("nan"))
             diff = (sim3_v - real_v) * 100
-            # 抽样噪声 SE = sqrt(p(1-p)/n)；n<50 时 SE > 5pp（最坏 p=0.5 时 SE≈7pp），判据精度不足
-            low_conf = n < 50
+            k = int(round(real_v * n)) if n > 0 else 0
+            ci_low, ci_high = clopper_pearson_ci(k, n)
+            in_ci = bool(ci_low <= sim3_v <= ci_high) if n > 0 else False
+            if n < 50:
+                verdict = "undecidable" if in_ci else "fail"
+            elif abs(diff) <= 5.0:
+                verdict = "pass"
+            elif not in_ci:
+                verdict = "fail"
+            else:
+                verdict = "undecidable"
             c1_layers_out[dim][layer] = {
                 "n": n, "real": real_v, "sim3": sim3_v,
-                "diff_pp": diff, "low_conf": low_conf,
-                "pass": low_conf or (abs(diff) <= 5.0),
+                "diff_pp": diff,
+                "ci_low": ci_low, "ci_high": ci_high, "in_ci": in_ci,
+                "verdict": verdict,
+                "pass": verdict in ("pass", "undecidable"),
             }
 
     # C2（判据对象见 note；主控字面口径 = iu0 且 completeness=1 ≤ 2%，
@@ -525,7 +554,7 @@ def main():
     # ---------- 体检表（§7.4 第2件） ----------
     phys_real = physical_check(real_rec)
     phys_check = {}
-    for k, label in [("iu0", "iu0"), ("iu1", "iu1"), ("iu2", "iu2"), ("iu3p", "iu3+")]:
+    for k, label in [("iu0", "iu0"), ("iu1", "iu1"), ("iu2", "iu2"), ("iu3p", "iu3p")]:
         diff = (sim3_res["phys"]["iu_dist"][k] - phys_real["iu_dist"][k]) * 100
         phys_check[f"diff_{label}_pp"] = diff
         phys_check[f"pass_{label}"] = abs(diff) <= 5.0
@@ -595,14 +624,16 @@ def main():
               f"{'✅' if a_pass[k]['pass'] else '❌'}")
 
     print("\n" + "=" * 78)
-    print("C1 条件三率（每层差 ≤ 5pp；n<30 标低置信）")
+    print("C1 条件三率（§7.5：CP CI 结算；n<50 或 CI 重叠 → 不可判）")
     print("=" * 78)
+    verdict_flag = {"pass": "✅", "undecidable": "⚠️不可判", "fail": "❌"}
     for dim, layers in c1_layers_out.items():
         print(f"  [{dim}]")
         for layer, v in layers.items():
-            flag = "⚠️低置信" if v["low_conf"] else ("✅" if v["pass"] else "❌")
+            flag = verdict_flag[v["verdict"]]
             print(f"    {layer:8s}: n={v['n']:4d}  真实 {v['real']*100:5.2f}%  "
-                  f"3维 {v['sim3']*100:5.2f}%  差 {v['diff_pp']:5.2f}pp  {flag}")
+                  f"3维 {v['sim3']*100:5.2f}%  差 {v['diff_pp']:5.2f}pp  "
+                  f"CP-CI[{v['ci_low']*100:.1f}%,{v['ci_high']*100:.1f}%]  {flag}")
 
     print("\n" + "=" * 78)
     print("C2 联合一致性（iu==0 轮次的组合分布，R 次均值）")
@@ -648,7 +679,7 @@ def main():
     c1_pass = all(v["pass"] for layers in c1_layers_out.values() for v in layers.values())
     c2_pass = c2_out["pass_sim3_spill_2pct"]  # 用数据口径（见 note）
     a_pass_all = all(a_pass[k]["pass"] for k in RATE_KEYS)
-    print("\n>>> M2b-1b 判定（含体检表）：")
+    print("\n>>> M2b-1c 判定（修 info_units 估计口径后；含体检表与 C1 CP CI 结算）：")
     print(f"    B1 {'✅' if b1_pass else '❌'}  B2 {'✅' if b2_pass else '❌'}  "
           f"C1 {'✅' if c1_pass else '❌'}  C2 {'✅' if c2_pass else '❌'}  "
           f"A组 {'✅' if a_pass_all else '❌'}  体检表 {'✅' if phys_pass else '❌'}  "

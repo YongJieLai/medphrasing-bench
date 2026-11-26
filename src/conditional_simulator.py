@@ -170,7 +170,12 @@ class ConditionalSimulator:
         pr_rel, n_rel = cond_3d(samples, "openness", OPENNESS, "relevance", RELEVANCE)
         pr_def, n_def = cond_3d(samples, "leadingness", LEADINGNESS, "definiteness", DEFINITENESS)
         pr_cmp, n_cmp = cond_3d(samples, "multi_barreled", MULTI_BARRELED, "completeness", COMPLETENESS)
-        pr_iu, n_iu = cond_3d(samples, "openness", OPENNESS, "info_units", INFO_UNITS)
+        # info_units 维排除附和轮（§7.5 M2b-1c 第 1 件事）：
+        # 「附和的零」与「无话可说的零」是两类不同事件（真实非附和轮 iu=0 仅 1.4%），
+        # 混入估计会让正常回答以 ~17% 概率抽到 0，使患者系统性沉默。附和轮的 iu=0
+        # 由采样期 deff=="agree" 硬置零负责，不在估计口径里重复计入。
+        non_agree = [s for s in samples if s.get("definiteness") != "agree"]
+        pr_iu, n_iu = cond_3d(non_agree, "openness", OPENNESS, "info_units", INFO_UNITS)
 
         return cls(probs={
             "relevance": pr_rel,
@@ -212,8 +217,11 @@ class ConditionalSimulator:
         rem_bins = config["remaining_bins"]
 
         # info_units 回退到 x 边际：P(iu | openness)，remaining 与 turn 均不起作用
+        # §7.5：info_units 估计排除附和轮，消融对照与 3 维主体保持同口径
         x_marg: dict = defaultdict(lambda: defaultdict(int))
         for s in samples:
+            if s.get("definiteness") == "agree":
+                continue
             if s.get("openness") in OPENNESS and s.get("info_units") in INFO_UNITS:
                 x_marg[s["openness"]][s["info_units"]] += 1
 
