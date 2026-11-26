@@ -152,6 +152,8 @@ def main():
     ap.add_argument("--role", required=True, choices=["annotator", "reviewer"])
     ap.add_argument("--limit", type=int, default=None, help="只标前 N 条（配合 --seed 抽样）")
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--shard", type=int, default=None, help="分片编号（0-based，配合 --nshards）")
+    ap.add_argument("--nshards", type=int, default=1, help="分片总数")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
@@ -165,6 +167,13 @@ def main():
         rng = random.Random(args.seed)
         q_pairs = rng.sample(q_pairs, min(args.limit, len(q_pairs)))
         print(f"抽样 {len(q_pairs)} 条 (seed={args.seed})")
+
+    if args.shard is not None and args.nshards > 1:
+        chunk = (len(q_pairs) + args.nshards - 1) // args.nshards
+        start = args.shard * chunk
+        end = min(start + chunk, len(q_pairs))
+        q_pairs = q_pairs[start:end]
+        print(f"分片 {args.shard}/{args.nshards}: [{start}:{end}) 共 {len(q_pairs)} 条")
 
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
