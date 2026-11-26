@@ -1,0 +1,13 @@
+{
+  "task": "M2a 真值表构建 + M1 两项遗留核查",
+  "data": "data/annot_all_flash.jsonl (5325 raw, 5169-5171 valid)",
+  "subtasks": {
+    "opening_openness": "scripts/check_opening_openness.py — R6 口径核查",
+    "within_fixed_effects": "scripts/analyze_m1_within.py — C(dialogue_id) 固定效应重估",
+    "aiu_extraction": "scripts/extract_aiu.py — AIU 文本抽取+跨轮去重+保真度",
+    "aiu_agreement": "scripts/check_aiu_agreement.py — flash vs plus 交叉核对 recall/precision"
+  },
+  "models": {"extractor": "qwen-flash", "reviewer": "qwen-plus"},
+  "date": "2026-11-26",
+  "note": "盲标(两阶段)按主控指示跳过；人工核对以 qwen-plus 交叉替代"
+}

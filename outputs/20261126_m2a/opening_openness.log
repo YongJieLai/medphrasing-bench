@@ -1,0 +1,35 @@
+提问样本（openness 合法）: 5169，对话数: 1354
+
+==================================================================
+各阶段 openness 分布
+------------------------------------------------------------------
+阶段             n      open      semi    closed
+opening     2024     22.8%     25.2%     52.0%
+body        1433     11.2%     24.8%     64.0%
+closing     1712      7.0%     19.2%     73.8%
+------------------------------------------------------------------
+全库          5169     14.4%     23.1%     62.5%
+
+==================================================================
+opening 阶段 open 占比: 22.8%
+⚠️ 低于 40% 阈值 -> 触发 R6 核查，输出 20 条被判 semi 的 opening 问句原文：
+  [1:2] "I'm so sorry. Well you are only twenty five, so let's hope this is the last of the worst. Let's see how we can best help you. When did it start?"
+  [5:0] "How's your asthma since you started using your inhaler again?"
+  [10:2] 'First, how old are you?'
+  [11:0] "I hear someone has a birthday coming up, how old are you turning, ma'am?"
+  [11:6] 'How did you tolerate the higher dose?'
+  [14:0] 'How old are you?'
+  [16:0] 'How old are you, young boy?'
+  [17:0] 'When did the nausea and vomiting start?'
+  [22:2] 'When did these episodes occur?'
+  [28:0] 'Hello sir. Let me first start by asking your age. How old are you?'
+  [29:0] 'You had mentioned that cancer runs in your family. What type of cancer?'
+  [31:2] 'What line of work are you in?'
+  [38:0] 'Hello, sir. How are you today? Can you confirm your age?'
+  [38:2] 'How long have you been experiencing this?'
+  [38:6] 'Interesting. Did you take any medication for that?'
+  [44:0] 'How old was he when he were first evaluated in the other hospital?'
+  [44:2] 'Which hospital was that again?'
+  [47:2] 'Ah okay. And who is in your family?'
+  [49:0] 'Where do you live?'
+  [52:2] "How old is he? Can you tell me a little bit of how your husband's condition has come to this point? His level of consciousness is concerning."
