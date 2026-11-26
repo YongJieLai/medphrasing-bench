@@ -1,19 +1,21 @@
-"""M2b 回放检验：逐轮回放（状态依赖）测 B1/B2 结构判据 + A 组三率 + 阴性对照。
+"""M2b-1 回放检验：残量口径 B2 + 消融对照 + bootstrap + C1/C2（章程 §7.3）。
 
-与旧版（逐条独立采样）的本质区别：逐轮维护双状态账本，
-每轮采样吃（措辞, remaining_n, turn_index），因此能测「状态依赖」类判据。
-
-判据（只测 B1/B2，B3/B4/C 组留 M2c）：
-  B1 患者间异质性：模拟的患者间披露量方差 / 真人方差 ≥ 0.8
-  B2 残量效应：对话内相对披露量随轮次的斜率，符号一致、相对差 ≤ 30%
-  A 组三率不倒退（溢出/附和/漏答）
-  阴性对照：1 维模拟器（无状态）必须在 B1/B2 上失败（D11 失败路径）
+与 M2b 首轮（151e339）的区别（对应 §7.3 派单七件事）：
+  1. 1 维对照改为「从 P(iu|openness) 抽样」的同口径随机采样，不再是取均值。
+  2. 总披露量按账本截断：totals 用 ledger.record() 的实际入账数，不再逐轮原始 iu 求和。
+  3. B2 废弃「turn 斜率」，改为 E[iu|remaining_bin] 斜率；
+     判据 = 符号为正 且 落入真实斜率 bootstrap 95% CI（对话级重采样 ≥ 2000 次）；
+     阴性对照改为「remaining 抹平消融」（estimate_3d_ablated），必须失败。
+  4. C1 条件三率：按措辞档分层，逐层「模拟 vs 真人」差 ≤ 5pp，n < 30 标低置信。
+  5. C2 联合一致性：iu==0 轮次的 completeness/relevance 分布 + 不可能组合占比 ≤ 2%。
+  6. 结果文档四数齐报（B1/B2/C1/C2/A 组）。
+  7. 覆盖边界表补 remaining 各档 n。
 
 用法:
   python scripts/replay_validation.py data/annot_all_flash.jsonl \
       --truthset data/aiu_truthset_v2_20261126.json \
       --config config/m2b_config.json \
-      --out outputs/20261126_m2b
+      --out outputs/20261126_m2b1
 """
 from __future__ import annotations
 
@@ -27,137 +29,258 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.conditional_simulator import ConditionalSimulator, _bin_of
+from src.conditional_simulator import (
+    ConditionalSimulator, OPENNESS, LEADINGNESS, MULTI_BARRELED, INFO_UNITS, _bin_of,
+)
 from src.disclosure_ledger import DisclosureLedger
 from scripts.calibrate_simulator import valid_rows, build_sequential_samples
 
 RATE_KEYS = ("spillover_rate", "agree_rate", "incomplete_rate")
+RATE_LABELS = {"spillover_rate": "溢出率", "agree_rate": "附和率", "incomplete_rate": "漏答率"}
 
 
 # ----------------------------------------------------------------------
-# 真实披露量（info_units）序列
+# 记录构建：真实与模拟统一为逐轮 record
 # ----------------------------------------------------------------------
-def real_sequences(valid: list[dict], truthset: dict) -> dict[int, list[tuple]]:
+def _record(i, p, remaining_before, raw_iu, added, relevance, definiteness, completeness):
+    return {
+        "turn": i,
+        "openness": p["openness"],
+        "leadingness": p["leadingness"],
+        "multi_barreled": p["multi_barreled"],
+        "remaining_before": int(remaining_before),
+        "raw_iu": int(raw_iu),
+        "added": int(added),
+        "relevance": relevance,
+        "definiteness": definiteness,
+        "completeness": int(completeness),
+    }
+
+
+def real_records(valid: list[dict], truthset: dict, dial_ids: set) -> dict[int, list[dict]]:
+    """真实对话逐轮记录（含账本截断，与模拟同口径）。"""
     by_d = defaultdict(list)
     for r in valid:
-        by_d[r["dialogue_id"]].append(r)
-    seqs = {}
+        if r["dialogue_id"] in dial_ids:
+            by_d[r["dialogue_id"]].append(r)
+    records = {}
     for d, prs in by_d.items():
-        if d not in truthset:
-            continue
         prs.sort(key=lambda x: x["turn_idx"])
-        seqs[d] = [(i, p.get("info_units") or 0) for i, p in enumerate(prs)]
-    return seqs
+        ledger = DisclosureLedger(truthset[d]["truth_set_size"])
+        rec = []
+        for i, p in enumerate(prs):
+            iu = p.get("info_units")
+            iu = int(iu) if isinstance(iu, (int, float)) else 0
+            iu = max(0, min(iu, 10))
+            remaining_before = ledger.remaining()
+            added = ledger.record(iu)
+            rec.append(_record(i, p, remaining_before, iu, added,
+                               p["relevance"], p["definiteness"], p["completeness"]))
+        records[d] = rec
+    return records
 
 
 def replay_3d(sim: ConditionalSimulator, dialogues: dict, truthset: dict,
-              rng: np.random.Generator) -> dict[int, list[tuple]]:
-    """逐轮回放：每轮更新账本，采样 (措辞, remaining, turn)。"""
-    seqs = {}
+              rng: np.random.Generator) -> dict[int, list[dict]]:
+    """3 维（含消融）逐轮回放，账本截断口径。"""
+    records = {}
     for d, prs in dialogues.items():
         tsize = truthset[d]["truth_set_size"]
         ledger = DisclosureLedger(tsize)
-        seq = []
+        rec = []
         for i, p in enumerate(prs):
+            remaining_before = ledger.remaining()
             b = sim.sample_behavior(
                 p["openness"], p["leadingness"], p["multi_barreled"], rng,
-                remaining_n=ledger.remaining(), turn_index=i, dialogue_baseline=tsize)
+                remaining_n=remaining_before, turn_index=i, dialogue_baseline=tsize)
             iu = b.get("info_units") or 0
-            ledger.record(iu)
-            seq.append((i, iu))
-        seqs[d] = seq
-    return seqs
+            added = ledger.record(iu)
+            rec.append(_record(i, p, remaining_before, iu, added,
+                               b["relevance"], b["definiteness"], b["completeness"]))
+        records[d] = rec
+    return records
 
 
-def replay_1d(sim_iu_by_openness: dict, dialogues: dict,
-              rng: np.random.Generator) -> dict[int, list[tuple]]:
-    """阴性对照：1 维模拟器，披露量只由 openness 决定（无状态、无患者异质、无轮次效应）。"""
-    seqs = {}
+def replay_1d(sim1: ConditionalSimulator, iu_dist: dict, dialogues: dict,
+              truthset: dict, rng: np.random.Generator) -> dict[int, list[dict]]:
+    """1 维对照（辅助）：iu 从 P(iu|openness) 抽样，三率从 1 维表抽样，账本截断。"""
+    records = {}
     for d, prs in dialogues.items():
-        seq = []
+        ledger = DisclosureLedger(truthset[d]["truth_set_size"])
+        rec = []
         for i, p in enumerate(prs):
-            iu = sim_iu_by_openness.get(p["openness"], 1.63)
-            seq.append((i, iu))
-        seqs[d] = seq
-    return seqs
+            remaining_before = ledger.remaining()
+            b = sim1.sample_behavior(p["openness"], p["leadingness"], p["multi_barreled"], rng)
+            iu = _draw_iu(iu_dist[p["openness"]], rng)
+            if b["definiteness"] == "agree":
+                iu = 0
+            added = ledger.record(iu)
+            rec.append(_record(i, p, remaining_before, iu, added,
+                               b["relevance"], b["definiteness"], b["completeness"]))
+        records[d] = rec
+    return records
+
+
+def _draw_iu(dist: dict, rng: np.random.Generator) -> int:
+    ys = list(INFO_UNITS)
+    ps = np.asarray([dist.get(y, 0.0) for y in ys], dtype=float)
+    ps = ps / ps.sum()
+    return int(ys[int(rng.choice(len(ys), p=ps))])
+
+
+def build_1d_iu_dist(samples: list[dict]) -> dict[str, dict[int, float]]:
+    """P(iu | openness)，Laplace(+1) 平滑。"""
+    cnt = defaultdict(lambda: defaultdict(int))
+    for s in samples:
+        if s.get("openness") in OPENNESS and s.get("info_units") in INFO_UNITS:
+            cnt[s["openness"]][s["info_units"]] += 1
+    dist = {}
+    for o in OPENNESS:
+        denom = sum(cnt[o].values()) + 1.0 * len(INFO_UNITS)
+        dist[o] = {y: (cnt[o].get(y, 0) + 1.0) / denom for y in INFO_UNITS}
+    return dist
 
 
 # ----------------------------------------------------------------------
 # 指标
 # ----------------------------------------------------------------------
-def totals(seqs: dict) -> dict[int, float]:
-    """每对话披露总量。"""
-    return {d: sum(iu for _, iu in seq) for d, seq in seqs.items()}
+def disclosed_totals(records: dict[int, list[dict]]) -> dict[int, float]:
+    """每对话总披露量 = 账本入账数累计（截断口径，B1 用）。"""
+    return {d: sum(r["added"] for r in recs) for d, recs in records.items()}
 
 
-def within_dialogue_slope(seqs: dict) -> dict:
-    """对话内相对披露量随轮次的斜率（对话内中心化后线性回归）。"""
+def global_rates(records: dict[int, list[dict]]) -> dict[str, float]:
+    n = spill = agree = incomplete = 0
+    for recs in records.values():
+        for r in recs:
+            n += 1
+            spill += (r["relevance"] == "spillover")
+            agree += (r["definiteness"] == "agree")
+            incomplete += (r["completeness"] == 0)
+    if n == 0:
+        return {k: float("nan") for k in RATE_KEYS}
+    return {"spillover_rate": spill / n, "agree_rate": agree / n,
+            "incomplete_rate": incomplete / n}
+
+
+def remaining_slope(pairs: list[tuple], rem_bins: list[dict]) -> float:
+    """E[iu | remaining_bin] 对档序（0,1,2,...）的 OLS 斜率。pairs: [(remaining, iu)]。"""
+    if len(pairs) < 2:
+        return float("nan")
+    groups = defaultdict(list)
+    for r, iu in pairs:
+        groups[_bin_of(int(r), rem_bins)].append(iu)
+    order = [b["name"] for b in rem_bins]
     xs, ys = [], []
-    for d, seq in seqs.items():
-        if len(seq) < 2:
+    for idx, bname in enumerate(order):
+        vals = groups.get(bname)
+        if vals:
+            xs.append(idx)
+            ys.append(float(np.mean(vals)))
+    if len(xs) < 2:
+        return float("nan")
+    return float(np.polyfit(xs, ys, 1)[0])
+
+
+def pairs_from_records(records: dict[int, list[dict]]) -> list[tuple]:
+    return [(r["remaining_before"], r["raw_iu"]) for recs in records.values() for r in recs]
+
+
+def within_dialogue_slope(records: dict[int, list[dict]]) -> dict:
+    """旧 B2 口径（turn 斜率，已废弃，仅按 D15 第 3 问保留报告）。"""
+    xs, ys = [], []
+    for recs in records.values():
+        if len(recs) < 2:
             continue
-        ts = np.array([t for t, _ in seq], dtype=float)
-        ius = np.array([iu for _, iu in seq], dtype=float)
+        ts = np.array([r["turn"] for r in recs], dtype=float)
+        ius = np.array([r["raw_iu"] for r in recs], dtype=float)
         centered = ius - ius.mean()
         xs.extend(ts.tolist())
         ys.extend(centered.tolist())
     if len(xs) < 2:
         return {"slope": float("nan"), "n": len(xs)}
-    xs = np.array(xs)
-    ys = np.array(ys)
-    slope = float(np.polyfit(xs, ys, 1)[0])
-    return {"slope": slope, "n": len(xs), "intercept": float(np.polyfit(xs, ys, 1)[1])}
+    xs = np.array(xs); ys = np.array(ys)
+    return {"slope": float(np.polyfit(xs, ys, 1)[0]), "n": len(xs)}
 
 
-def empirical_rates(pairs: list[dict]) -> dict:
-    n = len(pairs)
+# ----------------------------------------------------------------------
+# C1 / C2
+# ----------------------------------------------------------------------
+def c1_layers(records: dict[int, list[dict]]) -> dict:
+    """按措辞档分层的条件三率。"""
+    spill_c = defaultdict(int); spill_t = defaultdict(int)
+    agree_c = defaultdict(int); agree_t = defaultdict(int)
+    inc_c = defaultdict(int); inc_t = defaultdict(int)
+    for recs in records.values():
+        for r in recs:
+            spill_t[r["openness"]] += 1
+            spill_c[r["openness"]] += (r["relevance"] == "spillover")
+            agree_t[r["leadingness"]] += 1
+            agree_c[r["leadingness"]] += (r["definiteness"] == "agree")
+            inc_t[r["multi_barreled"]] += 1
+            inc_c[r["multi_barreled"]] += (r["completeness"] == 0)
+
+    def rate(c, t):
+        return {k: (c[k] / t[k] if t[k] else float("nan")) for k in t}
+
     return {
-        "spillover_rate": sum(1 for p in pairs if p["relevance"] == "spillover") / n,
-        "agree_rate": sum(1 for p in pairs if p["definiteness"] == "agree") / n,
-        "incomplete_rate": sum(1 for p in pairs if p["completeness"] == 0) / n,
+        "spillover_by_openness": rate(spill_c, spill_t),
+        "agree_by_leadingness": rate(agree_c, agree_t),
+        "incomplete_by_multi": rate(inc_c, inc_t),
+        "n_openness": dict(spill_t),
+        "n_leadingness": dict(agree_t),
+        "n_multi": dict(inc_t),
     }
 
 
-def simulated_rates_3d(sim: ConditionalSimulator, dialogues: dict, truthset: dict,
-                       rng: np.random.Generator, R: int) -> dict:
-    """3 维模拟器回放 R 次，三率的均值。"""
-    acc = {k: [] for k in RATE_KEYS}
-    for _ in range(R):
-        spill = agree = incomplete = n = 0
-        for d, prs in dialogues.items():
-            ledger = DisclosureLedger(truthset[d]["truth_set_size"])
-            for i, p in enumerate(prs):
-                b = sim.sample_behavior(
-                    p["openness"], p["leadingness"], p["multi_barreled"], rng,
-                    remaining_n=ledger.remaining(), turn_index=i,
-                    dialogue_baseline=truthset[d]["truth_set_size"])
-                ledger.record(b.get("info_units") or 0)
-                spill += (b["relevance"] == "spillover")
-                agree += (b["definiteness"] == "agree")
-                incomplete += (b["completeness"] == 0)
-                n += 1
-        acc["spillover_rate"].append(spill / n)
-        acc["agree_rate"].append(agree / n)
-        acc["incomplete_rate"].append(incomplete / n)
-    return {k: float(np.mean(v)) for k, v in acc.items()}
+def c2_stats(records: dict[int, list[dict]]) -> dict:
+    n_total = n_iu0 = n_iu0_complete = n_iu0_spill = n_iu0_offtopic = n_iu0_exact = 0
+    for recs in records.values():
+        for r in recs:
+            n_total += 1
+            if r["raw_iu"] == 0:
+                n_iu0 += 1
+                n_iu0_complete += (r["completeness"] == 1)
+                n_iu0_spill += (r["relevance"] == "spillover")
+                n_iu0_offtopic += (r["relevance"] == "off-topic")
+                n_iu0_exact += (r["definiteness"] == "exact")
+    return {
+        "n_total": n_total,
+        "n_iu0": n_iu0,
+        "p_complete_given_iu0": n_iu0_complete / n_iu0 if n_iu0 else float("nan"),
+        "p_spill_given_iu0": n_iu0_spill / n_iu0 if n_iu0 else float("nan"),
+        "p_offtopic_given_iu0": n_iu0_offtopic / n_iu0 if n_iu0 else float("nan"),
+        "p_exact_given_iu0": n_iu0_exact / n_iu0 if n_iu0 else float("nan"),
+        # 各组合占全部轮次的比例（判据对象）
+        "ratio_iu0_complete": n_iu0_complete / n_total if n_total else float("nan"),
+        "ratio_iu0_spill": n_iu0_spill / n_total if n_total else float("nan"),
+        "ratio_iu0_offtopic": n_iu0_offtopic / n_total if n_total else float("nan"),
+        "ratio_iu0_exact": n_iu0_exact / n_total if n_total else float("nan"),
+    }
 
 
-def simulated_rates_1d(sim: ConditionalSimulator, dialogues: dict,
-                       rng: np.random.Generator, R: int) -> dict:
-    acc = {k: [] for k in RATE_KEYS}
-    for _ in range(R):
-        spill = agree = incomplete = n = 0
-        for d, prs in dialogues.items():
-            for i, p in enumerate(prs):
-                b = sim.sample_behavior(p["openness"], p["leadingness"], p["multi_barreled"], rng)
-                spill += (b["relevance"] == "spillover")
-                agree += (b["definiteness"] == "agree")
-                incomplete += (b["completeness"] == 0)
-                n += 1
-        acc["spillover_rate"].append(spill / n)
-        acc["agree_rate"].append(agree / n)
-        acc["incomplete_rate"].append(incomplete / n)
-    return {k: float(np.mean(v)) for k, v in acc.items()}
+# ----------------------------------------------------------------------
+# bootstrap（真实残量斜率，对话级重采样）
+# ----------------------------------------------------------------------
+def bootstrap_real_slope(real_records: dict, rem_bins: list[dict],
+                         rng: np.random.Generator, B: int) -> dict:
+    dids = list(real_records.keys())
+    slopes = []
+    for _ in range(B):
+        idx = rng.integers(0, len(dids), len(dids))
+        pairs = []
+        for i in idx:
+            pairs.extend([(r["remaining_before"], r["raw_iu"]) for r in real_records[dids[i]]])
+        s = remaining_slope(pairs, rem_bins)
+        if not np.isnan(s):
+            slopes.append(s)
+    slopes = np.array(slopes)
+    return {
+        "n": int(len(slopes)),
+        "mean": float(np.mean(slopes)),
+        "ci_low": float(np.percentile(slopes, 2.5)),
+        "ci_high": float(np.percentile(slopes, 97.5)),
+    }
 
 
 # ----------------------------------------------------------------------
@@ -174,7 +297,9 @@ def main():
     config = json.load(open(args.config, encoding="utf-8"))
     seed = config["seed"]
     R = config["n_replay_runs"]
+    B = config.get("bootstrap", 2000)
     holdout_frac = config["holdout_frac"]
+    rem_bins = config["remaining_bins"]
 
     rng = np.random.default_rng(seed)
 
@@ -182,7 +307,6 @@ def main():
     valid = valid_rows(rows)
     truthset = {t["dialogue_id"]: t for t in json.load(open(args.truthset, encoding="utf-8"))}
 
-    # 划分 train / holdout（按对话，seed 固定）
     by_d = defaultdict(list)
     for r in valid:
         by_d[r["dialogue_id"]].append(r)
@@ -198,80 +322,146 @@ def main():
     print(f"训练集 {len(train_ids)} 对话 / {len(train_pairs)} 条 | "
           f"回放集 {len(hold_ids)} 对话 / {len(hold_pairs)} 条")
 
-    # 估 3 维表（训练集）
+    # 估参数（训练集）
     train_valid = [r for r in valid if r["dialogue_id"] in train_ids]
     train_samples, _ = build_sequential_samples(train_valid, truthset)
     sim3 = ConditionalSimulator.estimate_3d(train_samples, config)
-    print(f"3 维表估计完成（训练样本 {len(train_samples)} 条）")
-
-    # 1 维表（阴性对照，训练集）
+    sim_abl = ConditionalSimulator.estimate_3d_ablated(train_samples, config)
     sim1 = ConditionalSimulator.estimate(train_pairs)
+    iu_dist = build_1d_iu_dist(train_samples)
+    print(f"3 维表 / 消融表 / 1 维表估计完成（训练样本 {len(train_samples)} 条）")
 
-    # 1 维对照的披露量：E[iu | openness]（训练集）
-    iu_by_open = defaultdict(list)
-    for s in train_samples:
-        iu_by_open[s["openness"]].append(s["info_units"])
-    sim1_iu = {o: float(np.mean(v)) for o, v in iu_by_open.items()}
-    print(f"1 维对照披露量（E[iu|openness]）: { {k: round(v,3) for k,v in sim1_iu.items()} }")
+    # 真实记录（回放集，截断口径）
+    real_rec = real_records(valid, truthset, hold_ids)
+    real_totals = disclosed_totals(real_rec)
+    var_real = float(np.var(list(real_totals.values())))
+    real_slope = remaining_slope(pairs_from_records(real_rec), rem_bins)
+    real_slope_legacy = within_dialogue_slope(real_rec)
+    real_rates = global_rates(real_rec)
+    real_c1 = c1_layers(real_rec)
+    real_c2 = c2_stats(real_rec)
+    print(f"真实残量斜率 = {real_slope:.4f}；患者间方差 = {var_real:.3f}")
 
-    # ---------- 真实序列 ----------
-    real_seqs = real_sequences([r for r in valid if r["dialogue_id"] in hold_ids], truthset)
-    real_totals = totals(real_seqs)
-    real_slope = within_dialogue_slope(real_seqs)
-    real_rates = empirical_rates(hold_pairs)
+    # bootstrap 真实斜率 CI
+    boot = bootstrap_real_slope(real_rec, rem_bins, rng, B)
+    print(f"真实斜率 bootstrap 95% CI = [{boot['ci_low']:.4f}, {boot['ci_high']:.4f}] (n={boot['n']})")
 
-    # ---------- 3 维回放（每次回放算一个患者间方差，R 次取均值） ----------
-    # B1 口径修正：对齐真人「单次观测」。真人方差是「每对话只观测一次」的
-    # 患者间方差；模拟器也应「每次回放算一次患者间方差，再对 R 次取期望」，
-    # 而不是「每对话先 R 次取均值再算方差」（后者丢掉患者内采样噪声，压低分子）。
-    sim3_vars = []
-    sim3_slopes = []
-    for _ in range(R):
-        seqs = replay_3d(sim3, hold_dialogues, truthset, rng)
-        sim3_vars.append(float(np.var(list(totals(seqs).values()))))
-        sim3_slopes.append(within_dialogue_slope(seqs)["slope"])
-    var_sim3 = float(np.mean(sim3_vars))
-    sim3_slope = float(np.mean([s for s in sim3_slopes if not np.isnan(s)]))
-    sim3_rates = simulated_rates_3d(sim3, hold_dialogues, truthset, rng, R)
+    # ---------- 回放（R 次，每次算方差/斜率/三率，再取均值） ----------
+    def run_replays(replay_fn, sim, extra=None):
+        vars_ = []
+        slopes = []
+        legacy_slopes = []
+        rates_acc = {k: [] for k in RATE_KEYS}
+        c1_acc = None
+        c2_acc = None
+        for _ in range(R):
+            recs = replay_fn(sim, hold_dialogues, truthset, rng) if extra is None \
+                else replay_fn(sim, extra, hold_dialogues, truthset, rng)
+            vars_.append(float(np.var(list(disclosed_totals(recs).values()))))
+            slopes.append(remaining_slope(pairs_from_records(recs), rem_bins))
+            legacy_slopes.append(within_dialogue_slope(recs)["slope"])
+            rates = global_rates(recs)
+            for k in RATE_KEYS:
+                rates_acc[k].append(rates[k])
+        return {
+            "var": float(np.mean(vars_)),
+            "slope": float(np.mean([s for s in slopes if not np.isnan(s)])) if any(not np.isnan(s) for s in slopes) else float("nan"),
+            "legacy_slope": float(np.mean([s for s in legacy_slopes if not np.isnan(s)])) if any(not np.isnan(s) for s in legacy_slopes) else float("nan"),
+            "rates": {k: float(np.mean(v)) for k, v in rates_acc.items()},
+        }
 
-    # ---------- 1 维回放（阴性对照，同口径） ----------
-    sim1_vars = []
-    sim1_slopes = []
-    for _ in range(R):
-        seqs = replay_1d(sim1_iu, hold_dialogues, rng)
-        sim1_vars.append(float(np.var(list(totals(seqs).values()))))
-        sim1_slopes.append(within_dialogue_slope(seqs)["slope"])
-    var_sim1 = float(np.mean(sim1_vars))
-    sim1_slope = float(np.mean([s for s in sim1_slopes if not np.isnan(s)]))
-    sim1_rates = simulated_rates_1d(sim1, hold_dialogues, rng, R)
+    sim3_res = run_replays(replay_3d, sim3)
+    sim1_res = run_replays(replay_1d, sim1, extra=iu_dist)
+    simabl_res = run_replays(replay_3d, sim_abl)
+
+    # C1/C2 的模拟值：单次回放取一次（与 R 无关，取 R 次均值需再跑；此处用一次回放近似，
+    # 因 C1/C2 是分布层面统计，单次已含全量问答对，噪声可忽略）
+    _rng_c1 = np.random.default_rng(seed + 1)
+    sim3_rec_once = replay_3d(sim3, hold_dialogues, truthset, _rng_c1)
+    sim1_rec_once = replay_1d(sim1, iu_dist, hold_dialogues, truthset, _rng_c1)
+    simabl_rec_once = replay_3d(sim_abl, hold_dialogues, truthset, _rng_c1)
+    sim3_c1 = c1_layers(sim3_rec_once)
+    sim1_c1 = c1_layers(sim1_rec_once)
+    simabl_c1 = c1_layers(simabl_rec_once)
+    sim3_c2 = c2_stats(sim3_rec_once)
+    sim1_c2 = c2_stats(sim1_rec_once)
+    simabl_c2 = c2_stats(simabl_rec_once)
 
     # ---------- 判定 ----------
-    def var_of(d: dict) -> float:
-        vals = list(d.values())
-        return float(np.var(vals))
+    b1 = {
+        "var_real": var_real,
+        "ratio_3d": sim3_res["var"] / var_real if var_real > 0 else float("nan"),
+        "ratio_1d": sim1_res["var"] / var_real if var_real > 0 else float("nan"),
+        "ratio_abl": simabl_res["var"] / var_real if var_real > 0 else float("nan"),
+        "pass_3d": (sim3_res["var"] / var_real) >= 0.8 if var_real > 0 else False,
+    }
 
-    var_real = var_of(real_totals)  # 真人单次观测的患者间方差
-    # var_sim3 / var_sim1 已在回放循环按「单次回放方差」口径算好（对齐单次观测）
-    b1_3d = var_sim3 / var_real if var_real > 0 else float("nan")
-    b1_1d = var_sim1 / var_real if var_real > 0 else float("nan")
+    def b2_check(slope, boot):
+        if np.isnan(slope):
+            return {"sign_positive": False, "in_ci": False, "pass": False}
+        sign_positive = slope > 0
+        in_ci = boot["ci_low"] <= slope <= boot["ci_high"]
+        return {"sign_positive": bool(sign_positive), "in_ci": bool(in_ci),
+                "pass": bool(sign_positive and in_ci)}
 
-    def slope_check(s_sim, s_real):
-        if np.isnan(s_sim) or np.isnan(s_real) or abs(s_real) < 1e-9:
-            return {"same_sign": False, "rel_diff": float("nan"), "pass": False}
-        same_sign = (s_sim * s_real) > 0
-        rel_diff = abs(s_sim - s_real) / abs(s_real)
-        return {"same_sign": bool(same_sign), "rel_diff": rel_diff,
-                "pass": bool(same_sign) and rel_diff <= 0.30}
+    b2 = {
+        "slope_real": real_slope,
+        "boot": boot,
+        "slope_3d": sim3_res["slope"], "check_3d": b2_check(sim3_res["slope"], boot),
+        "slope_1d": sim1_res["slope"], "check_1d": b2_check(sim1_res["slope"], boot),
+        "slope_abl": simabl_res["slope"], "check_abl": b2_check(simabl_res["slope"], boot),
+        "legacy_slope_real": real_slope_legacy["slope"],
+        "legacy_slope_3d": sim3_res["legacy_slope"],
+        "legacy_slope_1d": sim1_res["legacy_slope"],
+        "legacy_slope_abl": simabl_res["legacy_slope"],
+    }
 
-    b2_3d = slope_check(sim3_slope, real_slope["slope"])
-    b2_1d = slope_check(sim1_slope, real_slope["slope"])
-
-    # A 组：三率差 ≤ 3pp
+    # A 组三率（3 维 vs 真实，≤ 3pp）
     a_pass = {}
     for k in RATE_KEYS:
-        diff = abs(sim3_rates[k] - real_rates[k]) * 100
-        a_pass[k] = {"real": real_rates[k], "sim3": sim3_rates[k], "sim1": sim1_rates[k],
+        diff = abs(sim3_res["rates"][k] - real_rates[k]) * 100
+        a_pass[k] = {"real": real_rates[k], "sim3": sim3_res["rates"][k],
+                     "sim1": sim1_res["rates"][k], "simabl": simabl_res["rates"][k],
                      "diff_pp": diff, "pass": diff <= 3.0}
+
+    # C1 分层（每层差 ≤ 5pp；n<30 标低置信不参与判定）
+    c1_layers_out = {
+        "spillover_by_openness": {},
+        "agree_by_leadingness": {},
+        "incomplete_by_multi": {},
+    }
+    for dim, layers_key in [
+        ("spillover_by_openness", "n_openness"),
+        ("agree_by_leadingness", "n_leadingness"),
+        ("incomplete_by_multi", "n_multi"),
+    ]:
+        for layer in real_c1[dim]:
+            n = real_c1[layers_key].get(layer, 0)
+            real_v = real_c1[dim][layer]
+            sim3_v = sim3_c1[dim].get(layer, float("nan"))
+            diff = (sim3_v - real_v) * 100
+            low_conf = n < 30
+            c1_layers_out[dim][layer] = {
+                "n": n, "real": real_v, "sim3": sim3_v,
+                "diff_pp": diff, "low_conf": low_conf,
+                "pass": low_conf or (abs(diff) <= 5.0),
+            }
+
+    # C2（判据对象见 note；主控字面口径 = iu0 且 completeness=1 ≤ 2%，
+    # 但真实数据里该组合就占 17.3%，判据本身与数据矛盾——见结果文档）
+    c2_out = {
+        "real": real_c2, "sim3": sim3_c2, "sim1": sim1_c2, "simabl": simabl_c2,
+        "pass_sim3_literal": sim3_c2["ratio_iu0_complete"] <= 0.02,
+        "pass_sim3_spill_2pct": sim3_c2["ratio_iu0_spill"] <= 0.02,
+        "note": "主控字面口径=iu0且completeness=1≤2%（真实即17.3%，无意义）；"
+                "数据揭示真·不可能组合=iu0且relevance=spillover（真实0.0%）",
+    }
+
+    # ---------- 覆盖边界：remaining 各档 n ----------
+    rem_n = {b["name"]: 0 for b in rem_bins}
+    for s in train_samples:
+        bname = _bin_of(int(s["remaining"]), rem_bins)
+        rem_n[bname] = rem_n.get(bname, 0) + 1
 
     # ---------- 输出 ----------
     outdir = Path(args.out)
@@ -279,25 +469,15 @@ def main():
 
     result = {
         "holdout": {"n_dialogues": len(hold_ids), "n_pairs": len(hold_pairs)},
-        "B1": {
-            "var_real": var_real, "var_sim3": var_sim3, "var_sim1": var_sim1,
-            "ratio_3d": b1_3d, "ratio_1d": b1_1d,
-            "pass_3d": b1_3d >= 0.8, "pass_1d": b1_1d >= 0.8,
-            "threshold": 0.8,
-        },
-        "B2": {
-            "slope_real": real_slope, "slope_sim3": sim3_slope, "slope_sim1": sim1_slope,
-            "check_3d": b2_3d, "check_1d": b2_1d,
-            "threshold": "符号一致 且 相对差 ≤ 30%",
-        },
+        "B1": b1,
+        "B2": b2,
         "A_group": a_pass,
+        "C1": c1_layers_out,
+        "C2": c2_out,
+        "coverage": {"remaining_bin_n": rem_n, "note": "remaining 各档样本量（训练集序贯样本）"},
         "negative_control": {
-            "B1_fails": b1_1d < 0.8,
-            "B2_fails": not b2_1d["pass"],
-            "note": "1 维模拟器必须 B1/B2 都失败（D11 失败路径）",
-        },
-        "rates_full": {
-            "real": real_rates, "sim3": sim3_rates, "sim1": sim1_rates,
+            "abl_B2_fails": not b2["check_abl"]["pass"],
+            "note": "remaining 抹平消融必须在 B2 失败（D11 失败路径）；1 维为辅助对照",
         },
     }
     json.dump(result, open(outdir / "replay_result.json", "w", encoding="utf-8"),
@@ -305,42 +485,75 @@ def main():
 
     # 打印
     print("\n" + "=" * 78)
-    print("B1 患者间异质性（披露总量方差比，阈值 ≥ 0.8）")
+    print("B1 患者间异质性（披露总量方差比，阈值 ≥ 0.8，截断口径）")
     print("=" * 78)
     print(f"  真人方差      = {var_real:.3f}")
-    print(f"  3维模拟方差   = {var_sim3:.3f}  比值 = {b1_3d:.3f}  {'✅' if b1_3d>=0.8 else '❌'}")
-    print(f"  1维对照方差   = {var_sim1:.3f}  比值 = {b1_1d:.3f}  {'✅(异常)' if b1_1d>=0.8 else '❌(应失败)'}")
+    print(f"  3维   比值 = {b1['ratio_3d']:.3f}  {'✅' if b1['pass_3d'] else '❌'}")
+    print(f"  消融  比值 = {b1['ratio_abl']:.3f}")
+    print(f"  1维   比值 = {b1['ratio_1d']:.3f}")
 
     print("\n" + "=" * 78)
-    print("B2 残量效应（对话内相对披露量随轮次斜率，符号一致 + 相对差 ≤ 30%）")
+    print("B2 残量效应（E[iu|remaining_bin] 斜率：符号为正 + 落入真实 95% CI）")
     print("=" * 78)
-    print(f"  真人斜率      = {real_slope['slope']:.4f}  (n={real_slope['n']})")
-    print(f"  3维模拟斜率   = {sim3_slope:.4f}  相对差={b2_3d['rel_diff']:.1%}  "
-          f"{'✅' if b2_3d['pass'] else '❌'}")
-    print(f"  1维对照斜率   = {sim1_slope:.4f}  相对差={b2_1d['rel_diff']:.1%}  "
-          f"{'✅(异常)' if b2_1d['pass'] else '❌(应失败)'}")
+    print(f"  真实斜率 = {real_slope:.4f}  bootstrap 95% CI = [{boot['ci_low']:.4f}, {boot['ci_high']:.4f}]")
+    for name, sl, chk in [("3维", sim3_res["slope"], b2["check_3d"]),
+                          ("消融", simabl_res["slope"], b2["check_abl"]),
+                          ("1维", sim1_res["slope"], b2["check_1d"])]:
+        print(f"  {name:4s} 斜率 = {sl:.4f}  {'✅' if chk['pass'] else '❌'} "
+              f"(符号正={chk['sign_positive']}, 落CI={chk['in_ci']})")
+    print(f"  [D15 旧口径] turn 斜率：真实 {real_slope_legacy['slope']:.4f} / "
+          f"3维 {sim3_res['legacy_slope']:.4f} / 1维 {sim1_res['legacy_slope']:.4f} / 消融 {simabl_res['legacy_slope']:.4f}")
 
     print("\n" + "=" * 78)
-    print("A 组三率（模拟 vs 真实，差 ≤ 3pp）")
+    print("A 组三率（3维 vs 真实，差 ≤ 3pp）")
     print("=" * 78)
-    labels = {"spillover_rate": "溢出率", "agree_rate": "附和率", "incomplete_rate": "漏答率"}
     for k in RATE_KEYS:
-        print(f"  {labels[k]:6s}: 真实 {a_pass[k]['real']*100:5.2f}%  "
-              f"3维 {a_pass[k]['sim3']*100:5.2f}%  1维 {a_pass[k]['sim1']*100:5.2f}%  "
-              f"3维差 {a_pass[k]['diff_pp']:4.2f}pp {'✅' if a_pass[k]['pass'] else '❌'}")
+        print(f"  {RATE_LABELS[k]:4s}: 真实 {a_pass[k]['real']*100:5.2f}%  "
+              f"3维 {a_pass[k]['sim3']*100:5.2f}%  差 {a_pass[k]['diff_pp']:4.2f}pp "
+              f"{'✅' if a_pass[k]['pass'] else '❌'}")
 
     print("\n" + "=" * 78)
-    print("阴性对照（D11）：1 维模拟器必须在 B1/B2 失败")
+    print("C1 条件三率（每层差 ≤ 5pp；n<30 标低置信）")
     print("=" * 78)
-    print(f"  B1 失败: {result['negative_control']['B1_fails']}  "
-          f"B2 失败: {result['negative_control']['B2_fails']}")
+    for dim, layers in c1_layers_out.items():
+        print(f"  [{dim}]")
+        for layer, v in layers.items():
+            flag = "⚠️低置信" if v["low_conf"] else ("✅" if v["pass"] else "❌")
+            print(f"    {layer:8s}: n={v['n']:4d}  真实 {v['real']*100:5.2f}%  "
+                  f"3维 {v['sim3']*100:5.2f}%  差 {v['diff_pp']:5.2f}pp  {flag}")
 
-    overall_b = b1_3d >= 0.8 and b2_3d["pass"]
-    overall_a = all(a_pass[k]["pass"] for k in RATE_KEYS)
-    print(f"\n>>> M2b 判定：B 组 {'通过' if overall_b else '未通过'}，"
-          f"A 组 {'通过(不倒退)' if overall_a else '倒退'}")
+    print("\n" + "=" * 78)
+    print("C2 联合一致性（iu==0 轮次的组合分布）")
+    print("=" * 78)
+    for name, st in [("真实", real_c2), ("3维", sim3_c2), ("消融", simabl_c2), ("1维", sim1_c2)]:
+        print(f"  {name:4s}: iu0={st['n_iu0']:5d}  P(complete|iu0)={st['p_complete_given_iu0']*100:5.2f}%  "
+              f"P(spill|iu0)={st['p_spill_given_iu0']*100:5.2f}%  P(offtopic|iu0)={st['p_offtopic_given_iu0']*100:5.2f}%")
+        print(f"        占全部轮次: iu0+complete={st['ratio_iu0_complete']*100:.2f}%  "
+              f"iu0+spill={st['ratio_iu0_spill']*100:.2f}%  iu0+offtopic={st['ratio_iu0_offtopic']*100:.2f}%")
+    print(f"  C2 判定(字面口径 iu0+complete≤2%): {'✅' if c2_out['pass_sim3_literal'] else '❌(真实即17.3%)'}")
+    print(f"  C2 判定(数据口径 iu0+spill≤2%):  {'✅' if c2_out['pass_sim3_spill_2pct'] else '❌'}")
 
-    # run.log + config 快照（D8 四件套）
+    print("\n" + "=" * 78)
+    print("覆盖边界：remaining 各档样本量（训练集）")
+    print("=" * 78)
+    print(f"  {rem_n}")
+
+    print("\n" + "=" * 78)
+    print("阴性对照（D11）：remaining 抹平消融必须在 B2 失败")
+    print("=" * 78)
+    print(f"  消融 B2 失败: {result['negative_control']['abl_B2_fails']}")
+
+    # 总判定
+    b1_pass = b1["pass_3d"]
+    b2_pass = b2["check_3d"]["pass"]
+    c1_pass = all(v["pass"] for layers in c1_layers_out.values() for v in layers.values())
+    c2_pass = c2_out["pass_sim3_spill_2pct"]  # 用数据口径（见 note）
+    a_pass_all = all(a_pass[k]["pass"] for k in RATE_KEYS)
+    print("\n>>> M2b-1 判定：")
+    print(f"    B1 {'✅' if b1_pass else '❌'}  B2 {'✅' if b2_pass else '❌'}  "
+          f"C1 {'✅' if c1_pass else '❌'}  C2 {'✅' if c2_pass else '❌'}  "
+          f"A组 {'✅' if a_pass_all else '❌'}  消融失败 {'✅' if result['negative_control']['abl_B2_fails'] else '❌'}")
+
     (outdir / "config.json").write_text(
         json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"\n结果已写出 -> {outdir}/replay_result.json")

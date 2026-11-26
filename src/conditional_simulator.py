@@ -193,6 +193,44 @@ class ConditionalSimulator:
         })
 
     # =====================================================================
+    # 3 维消融估计（M2b-1 阴性对照：remaining 抹平）
+    # =====================================================================
+    @classmethod
+    def estimate_3d_ablated(cls, samples: list[dict], config: dict,
+                            alpha: float = 1.0) -> "ConditionalSimulator":
+        """remaining 抹平消融（M2b-1 §7.3 第 3 件事的阴性对照，D11 失败路径）。
+
+        结构完全同 estimate_3d，唯一区别：info_units 维的 remaining 依赖被抹平，
+        所有单元格回退到 x（openness）边际分布，等价于「remaining 系数 = 0」。
+        relevance / definiteness / completeness 三维保持 3 维不变。
+
+        用途：B2 的阴性对照。该模型在 B2（E[iu|remaining_bin] 斜率）上必须失败
+        （斜率 ≈ 0 或符号不符），证明 3 维模型的残量效应不是「结构一写就对」的恒等式。
+        """
+        sim = cls.estimate_3d(samples, config, alpha=alpha)
+        turn_bins = config["turn_bins"]
+        rem_bins = config["remaining_bins"]
+
+        # info_units 回退到 x 边际：P(iu | openness)，remaining 与 turn 均不起作用
+        x_marg: dict = defaultdict(lambda: defaultdict(int))
+        for s in samples:
+            if s.get("openness") in OPENNESS and s.get("info_units") in INFO_UNITS:
+                x_marg[s["openness"]][s["info_units"]] += 1
+
+        ablated_iu = {}
+        for x in OPENNESS:
+            denom = sum(x_marg[x].values()) + alpha * len(INFO_UNITS)
+            dist = {y: (x_marg[x].get(y, 0) + alpha) / denom for y in INFO_UNITS}
+            for rb in [b["name"] for b in rem_bins]:
+                for tb in [b["name"] for b in turn_bins]:
+                    ablated_iu[(x, rb, tb)] = dict(dist)
+        sim.probs["info_units"] = ablated_iu
+        # 保持 mode="3d" 走 3 维采样路径；加 ablated 标记供 D14 可指认
+        sim.probs["_meta"]["mode"] = "3d"
+        sim.probs["_meta"]["ablated"] = True
+        return sim
+
+    # =====================================================================
     # 采样
     # =====================================================================
     def _draw(self, table: dict, key, y_vals: tuple, rng: np.random.Generator):
