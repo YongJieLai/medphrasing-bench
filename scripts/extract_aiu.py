@@ -124,6 +124,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("file")
     ap.add_argument("--limit", type=int, default=None, help="只处理前 N 个对话（pilot）")
+    ap.add_argument("--shard", type=int, default=None, help="分片编号（0-based，配合 --nshards）")
+    ap.add_argument("--nshards", type=int, default=1, help="分片总数")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
@@ -135,9 +137,16 @@ def main():
     for r in valid:
         by_dialogue[r["dialogue_id"]].append(r)
 
-    dial_ids = list(by_dialogue.keys())
+    dial_ids = sorted(by_dialogue.keys())
     if args.limit:
         dial_ids = dial_ids[: args.limit]
+
+    if args.shard is not None and args.nshards > 1:
+        chunk = (len(dial_ids) + args.nshards - 1) // args.nshards
+        start = args.shard * chunk
+        end = min(start + chunk, len(dial_ids))
+        dial_ids = dial_ids[start:end]
+        print(f"分片 {args.shard}/{args.nshards}: 对话 [{start}:{end}) 共 {len(dial_ids)} 个")
 
     out_records = []
     t0 = time.time()
@@ -163,14 +172,17 @@ def main():
             el = time.time() - t0
             print(f"  进度 {i+1}/{len(dial_ids)}  耗时 {el:.0f}s")
 
-    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    with open(args.out, "w", encoding="utf-8") as f:
+    out_path = Path(args.out)
+    if args.shard is not None and args.nshards > 1:
+        out_path = out_path.with_name(f"{out_path.stem}-shard{args.shard:02d}{out_path.suffix}")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(out_records, f, ensure_ascii=False, indent=2)
 
     # 汇总
     sizes = [r["truth_set_size"] for r in out_records]
     import statistics
-    print(f"\n完成 {len(out_records)} 对话 -> {args.out}")
+    print(f"\n完成 {len(out_records)} 对话 -> {out_path}")
     print(f"真值集大小: 中位数={statistics.median(sizes):.1f}  "
           f"均值={statistics.mean(sizes):.2f}  范围=[{min(sizes)}, {max(sizes)}]")
     big = [r for r in out_records if r["truth_set_size"] > 20]
