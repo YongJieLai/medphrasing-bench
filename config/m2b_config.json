@@ -1,0 +1,25 @@
+{
+  "comment": "M2b 状态依赖采样器的分档规则。分档必须先写进本文件再跑（章程§7.2禁止项2）。所有阈值选取依据见 docs/m2b_results.md 的 D12 披露表。",
+  "turn_bins": [
+    { "name": "t0", "min": 0, "max": 0 },
+    { "name": "t1", "min": 1, "max": 1 },
+    { "name": "t2", "min": 2, "max": 2 },
+    { "name": "t3p", "min": 3, "max": 999999 }
+  ],
+  "remaining_bins": [
+    { "name": "r0", "min": 0, "max": 0 },
+    { "name": "r1_2", "min": 1, "max": 2 },
+    { "name": "r3_4", "min": 3, "max": 4 },
+    { "name": "r5_8", "min": 5, "max": 8 },
+    { "name": "r9p", "min": 9, "max": 999999 }
+  ],
+  "info_units_max": 10,
+  "alpha": 1.0,
+  "backoff_threshold": 30,
+  "holdout_frac": 0.2,
+  "seed": 42,
+  "bootstrap": 2000,
+  "replay_seed": 42,
+  "n_replay_runs": 50,
+  "dialogue_baseline": "truth_set_size"
+}

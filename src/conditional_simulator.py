@@ -3,15 +3,20 @@
 按 D1 纪律，患者「多说 / 附和 / 漏答」等披露行为【必须】来自从真实语料估计的
 条件概率表采样，而不是 system prompt 里的角色说明。
 
-本模块只做「行为层」采样：给定医生提问的措辞标注（openness / leadingness /
-multi_barreled），从条件概率表采样出患者这轮回答的披露行为标签
-（relevance / definiteness / completeness）。行为规格的渲染成自然语言由
-patient.py 负责（M3 真值场景）。
+本模块提供两种模式：
 
-三个条件分布（各对应一个 M0 已验证的措辞→披露效应）：
-  P(relevance     | openness)        -> 溢出率（H2）
-  P(definiteness  | leadingness)     -> 附和率（H3）
-  P(completeness  | multi_barreled)  -> 漏答率（H4）
+1. **1 维模式（`estimate` + 无状态 `sample_behavior`）** —— M2 早期产物，
+   只条件于措辞（openness/leadingness/multi_barreled），无任何状态依赖。
+   **本模式仅作为 M2b 的阴性对照（D11）保留**：它必须在 B1/B2 结构判据上失败，
+   以证明 3 维模式的状态依赖不是「代码一写就对」的恒等式。
+
+2. **3 维模式（`estimate_3d` + 有状态 `sample_behavior`）** —— M2b 主体。
+   条件于（措辞 × 剩余量档 × 轮次档），并由 disclosure_ledger 提供剩余量。
+   四个输出维度：
+     P(relevance     | openness,       remaining_bin, turn_bin)
+     P(definiteness  | leadingness,    remaining_bin, turn_bin)
+     P(completeness  | multi_barreled, remaining_bin, turn_bin)
+     P(info_units    | openness,       remaining_bin, turn_bin)   # 披露量
 
 参数用 Laplace (+1) 平滑避免零概率。save/load 为 JSON，参数有出处、可复现。
 """
@@ -31,26 +36,36 @@ MULTI_BARRELED = ("single", "multi")
 RELEVANCE = ("on-topic", "spillover", "off-topic")
 DEFINITENESS = ("exact", "vague", "agree")
 COMPLETENESS = (1, 0)  # 1=答全 0=漏答
+INFO_UNITS = tuple(range(0, 11))  # 0..10
+
+
+def _bin_of(value: int, bins: list[dict]) -> str:
+    """把数值映射到分档名。bins 为 [{"name","min","max"}, ...]。"""
+    for b in bins:
+        if b["min"] <= value <= b["max"]:
+            return b["name"]
+    return bins[-1]["name"]
 
 
 @dataclass
 class ConditionalSimulator:
-    """条件概率表 + 采样器。probs 结构：
-    {
-      "relevance|openness":      {(o, r): p, ...},
-      "definiteness|leadingness":{(l, d): p, ...},
-      "completeness|multi_barreled": {(m, c): p, ...},
-      "_meta": {...}
-    }
+    """条件概率表 + 采样器。
+
+    probs 结构（1 维模式）：
+      {"relevance|openness": {(o, r): p}, ...}
+    probs 结构（3 维模式，`_meta.mode == "3d"`）：
+      {"relevance": {(o, rbin, tbin): {rv: p}, ...},
+       "definiteness": {...}, "completeness": {...}, "info_units": {...}}
     """
     probs: dict = field(default_factory=dict)
 
-    # ---------- 估计 ----------
+    # =====================================================================
+    # 1 维估计（阴性对照，D11）
+    # =====================================================================
     @classmethod
     def estimate(cls, rows: list[dict], alpha: float = 1.0) -> "ConditionalSimulator":
-        """从标注行估计条件概率表（Laplace 平滑）。"""
+        """从标注行估计 1 维条件概率表（Laplace 平滑）。无状态。"""
         def cond_1d(rows, x_key, x_vals, y_key, y_vals):
-            """P(y|x) 的 Laplace 估计。返回 {(x, y): p}。"""
             cnt_xy = defaultdict(int)
             cnt_x = defaultdict(int)
             for r in rows:
@@ -75,6 +90,7 @@ class ConditionalSimulator:
             "definiteness|leadingness": pr_def,
             "completeness|multi_barreled": pr_cmp,
             "_meta": {
+                "mode": "1d",
                 "alpha": alpha,
                 "n_rows": len(rows),
                 "n_by_openness": n_open,
@@ -83,24 +99,158 @@ class ConditionalSimulator:
             },
         })
 
-    # ---------- 采样 ----------
-    def sample_behavior(self, openness: str, leadingness: str,
-                        multi_barreled: str, rng: np.random.Generator) -> dict:
-        """采样这一轮患者的披露行为标签。措辞取值非法时回退到无条件边际。"""
-        def draw(table, x, y_vals):
-            if x not in [k[0] for k in table if k[0] == x]:
-                # 该措辞档位在训练集无观测 -> 用无条件边际（等权 fallback）
-                return y_vals[int(rng.integers(0, len(y_vals)))]
-            ys = [y for y in y_vals]
-            ps = [table.get((x, y), 0.0) for y in ys]
-            ps = np.asarray(ps, dtype=float)
-            ps = ps / ps.sum()
-            return ys[int(rng.choice(len(ys), p=ps))]
+    # =====================================================================
+    # 3 维估计（M2b 主体）
+    # =====================================================================
+    @classmethod
+    def estimate_3d(cls, samples: list[dict], config: dict, alpha: float = 1.0
+                    ) -> "ConditionalSimulator":
+        """从序贯样本估计 3 维条件概率表。
 
-        rel = draw(self.probs["relevance|openness"], openness, RELEVANCE)
-        deff = draw(self.probs["definiteness|leadingness"], leadingness, DEFINITENESS)
-        comp = draw(self.probs["completeness|multi_barreled"], multi_barreled, COMPLETENESS)
-        return {"relevance": rel, "definiteness": deff, "completeness": comp}
+        samples: 每项含 openness/leadingness/multi_barreled/relevance/
+                 definiteness/completeness/info_units/remaining/turn。
+
+        稀疏 cell 用 backoff 平滑：n < backoff_threshold 的 cell 回退到该
+        x 档的 1 维边际分布（再不足则回退全局边际），避免 Laplace 在稀疏
+        cell 上退化成近均匀分布（均值虚高）。
+        """
+        turn_bins = config["turn_bins"]
+        rem_bins = config["remaining_bins"]
+        min_n = config.get("backoff_threshold", 30)
+
+        def cond_3d(samples, x_key, x_vals, y_key, y_vals):
+            """P(y | x, remaining_bin, turn_bin)。返回 {（x,rbin,tbin): {y:p}} 与各格计数。
+
+            多级 backoff（按信息量降序）：
+              cell(x,rbin,tbin) n≥min_n → 用 cell
+              否则 (x,rbin) 边际 n≥min_n → 用该 2 维边际
+              否则 x 边际（措辞维是该 y 的强预测因子）n≥min_n → 用 x 边际
+              否则 rbin 边际 → 全局边际
+            """
+            cnt = defaultdict(lambda: defaultdict(int))
+            xr_marg = defaultdict(lambda: defaultdict(int))
+            r_marg = defaultdict(lambda: defaultdict(int))
+            x_marg = defaultdict(lambda: defaultdict(int))
+            global_marg = defaultdict(int)
+            for s in samples:
+                x = s.get(x_key)
+                y = s.get(y_key)
+                rbin = _bin_of(int(s.get("remaining", 0)), rem_bins)
+                tbin = _bin_of(int(s.get("turn", 0)), turn_bins)
+                if x in x_vals and y in y_vals:
+                    cnt[(x, rbin, tbin)][y] += 1
+                    xr_marg[(x, rbin)][y] += 1
+                    r_marg[rbin][y] += 1
+                    x_marg[x][y] += 1
+                    global_marg[y] += 1
+            out = {}
+            cell_n = {}
+            for x in x_vals:
+                for rb in [b["name"] for b in rem_bins]:
+                    for tb in [b["name"] for b in turn_bins]:
+                        cell = cnt[(x, rb, tb)]
+                        n = sum(cell.values())
+                        cell_n[(x, rb, tb)] = n
+                        if n >= min_n:
+                            base = cell
+                        elif sum(xr_marg[(x, rb)].values()) >= min_n:
+                            base = xr_marg[(x, rb)]
+                        elif sum(x_marg[x].values()) >= min_n:
+                            base = x_marg[x]
+                        elif sum(r_marg[rb].values()) >= min_n:
+                            base = r_marg[rb]
+                        else:
+                            base = global_marg
+                        denom = sum(base.values()) + alpha * len(y_vals)
+                        out[(x, rb, tb)] = {
+                            y: (base.get(y, 0) + alpha) / denom for y in y_vals
+                        }
+            return out, cell_n
+
+        pr_rel, n_rel = cond_3d(samples, "openness", OPENNESS, "relevance", RELEVANCE)
+        pr_def, n_def = cond_3d(samples, "leadingness", LEADINGNESS, "definiteness", DEFINITENESS)
+        pr_cmp, n_cmp = cond_3d(samples, "multi_barreled", MULTI_BARRELED, "completeness", COMPLETENESS)
+        pr_iu, n_iu = cond_3d(samples, "openness", OPENNESS, "info_units", INFO_UNITS)
+
+        return cls(probs={
+            "relevance": pr_rel,
+            "definiteness": pr_def,
+            "completeness": pr_cmp,
+            "info_units": pr_iu,
+            "_meta": {
+                "mode": "3d",
+                "alpha": alpha,
+                "n_samples": len(samples),
+                "turn_bins": turn_bins,
+                "remaining_bins": rem_bins,
+                "cell_n": {
+                    "relevance": n_rel,
+                    "definiteness": n_def,
+                    "completeness": n_cmp,
+                    "info_units": n_iu,
+                },
+            },
+        })
+
+    # =====================================================================
+    # 采样
+    # =====================================================================
+    def _draw(self, table: dict, key, y_vals: tuple, rng: np.random.Generator):
+        """从给定 key 的条件分布抽一个 y。key 不存在则用等权边际 fallback。"""
+        if key not in table:
+            return y_vals[int(rng.integers(0, len(y_vals)))]
+        ps = np.asarray([table[key].get(y, 0.0) for y in y_vals], dtype=float)
+        ps = ps / ps.sum()
+        return y_vals[int(rng.choice(len(y_vals), p=ps))]
+
+    def sample_behavior(self, openness: str, leadingness: str, multi_barreled: str,
+                        rng: np.random.Generator, remaining_n: int | None = None,
+                        turn_index: int | None = None,
+                        dialogue_baseline: int | None = None) -> dict:
+        """采样这一轮患者的披露行为标签（含披露量 info_units）。
+
+        3 维模式：remaining_n 与 turn_index 生效（状态依赖）。
+        1 维模式：忽略状态，退化为无状态采样（阴性对照）。
+        措辞取值非法时回退到无条件边际。
+        """
+        mode = self.probs.get("_meta", {}).get("mode", "1d")
+
+        if mode == "3d":
+            rem_bins = self.probs["_meta"]["remaining_bins"]
+            turn_bins = self.probs["_meta"]["turn_bins"]
+            # remaining/turn 缺失时（如 M3 初始调用），用 baseline 作第 0 轮剩余
+            if remaining_n is None:
+                remaining_n = dialogue_baseline if dialogue_baseline is not None else 0
+            if turn_index is None:
+                turn_index = 0
+            rbin = _bin_of(int(remaining_n), rem_bins)
+            tbin = _bin_of(int(turn_index), turn_bins)
+
+            rel = self._draw(self.probs["relevance"], (openness, rbin, tbin), RELEVANCE, rng)
+            deff = self._draw(self.probs["definiteness"], (leadingness, rbin, tbin), DEFINITENESS, rng)
+            comp = self._draw(self.probs["completeness"], (multi_barreled, rbin, tbin), COMPLETENESS, rng)
+            iu = self._draw(self.probs["info_units"], (openness, rbin, tbin), INFO_UNITS, rng)
+            # 附和不计披露（§2.2 契约；真实数据 agree 轮 info_units 均值 0.034）
+            if deff == "agree":
+                iu = 0
+            return {
+                "relevance": rel, "definiteness": deff, "completeness": comp,
+                "info_units": int(iu),
+                "remaining_bin": rbin, "turn_bin": tbin,
+            }
+
+        # 1 维模式（阴性对照）
+        def draw_1d(table, x, y_vals):
+            if x not in [k[0] for k in table]:
+                return y_vals[int(rng.integers(0, len(y_vals)))]
+            ps = np.asarray([table.get((x, y), 0.0) for y in y_vals], dtype=float)
+            ps = ps / ps.sum()
+            return y_vals[int(rng.choice(len(y_vals), p=ps))]
+
+        rel = draw_1d(self.probs["relevance|openness"], openness, RELEVANCE)
+        deff = draw_1d(self.probs["definiteness|leadingness"], leadingness, DEFINITENESS)
+        comp = draw_1d(self.probs["completeness|multi_barreled"], multi_barreled, COMPLETENESS)
+        return {"relevance": rel, "definiteness": deff, "completeness": comp, "info_units": None}
 
     def sample_rates(self, pairs: list[dict], rng: np.random.Generator) -> dict:
         """对一批 (openness, leadingness, multi_barreled) 问句逐条采样，返回三率。"""
@@ -118,15 +268,33 @@ class ConditionalSimulator:
             "incomplete_rate": incomplete / n if n else float("nan"),
         }
 
-    # ---------- 持久化 ----------
+    # =====================================================================
+    # 持久化
+    # =====================================================================
     @staticmethod
     def _serialize(probs: dict) -> dict:
-        """tuple key -> 'a§b' 字符串，使 JSON 可序列化。"""
+        """嵌套 dict/tuple key -> 可 JSON 化。"""
+        def _walk(obj):
+            if isinstance(obj, dict):
+                out = {}
+                for kk, vv in obj.items():
+                    kk2 = kk if not isinstance(kk, tuple) else "§".join(map(str, kk))
+                    out[kk2] = _walk(vv)
+                return out
+            if isinstance(obj, (list, tuple)):
+                return [_walk(x) for x in obj]
+            return obj
+
         out = {}
         for k, v in probs.items():
             if k == "_meta":
-                out[k] = v
+                out[k] = _walk(v)
+            elif k in ("relevance", "definiteness", "completeness", "info_units") \
+                    and isinstance(v, dict) and v and isinstance(next(iter(v.values())), dict):
+                # 3 维：(x, rbin, tbin) -> {y: p}
+                out[k] = {f"{a}§{b}§{c}": inner for (a, b, c), inner in v.items()}
             elif isinstance(v, dict):
+                # 1 维：(x, y) -> p
                 out[k] = {f"{a}§{b}": p for (a, b), p in v.items()}
             else:
                 out[k] = v
@@ -141,12 +309,18 @@ class ConditionalSimulator:
                 continue
             out[k] = {}
             for kk, p in v.items():
-                a, b = kk.split("§")
-                try:
-                    b = int(b)  # completeness 的 0/1 还原为 int
-                except ValueError:
-                    pass
-                out[k][(a, b)] = p
+                parts = kk.split("§")
+                if len(parts) == 3:
+                    # 3 维：(x, rbin, tbin) -> {y:p}
+                    a, b, c = parts
+                    out[k][(a, b, c)] = p
+                elif len(parts) == 2:
+                    a, b = parts
+                    try:
+                        b = int(b)  # completeness 0/1 还原 int
+                    except ValueError:
+                        pass
+                    out[k][(a, b)] = p
         return out
 
     def save(self, path: Path) -> None:
