@@ -1,0 +1,12 @@
+{
+  "task": "M1 阶段共线排查",
+  "data": "data/annot_all_flash.jsonl",
+  "n_pairs": 5171,
+  "n_dialogue": 1355,
+  "annotator": "qwen-flash (P1 双标 AC1>=0.77)",
+  "model": "GEE binomial + exchangeable, groups=dialogue_id",
+  "controls": ["turn_index", "stage(opening/body/closing, 相对位置三分)"],
+  "threshold": "系数变化 < 50% 判定通过",
+  "hypotheses": ["H2 引导→附和", "H3 复合→漏答", "H4 追问→精确", "H5 开放→溢出(顺带)"],
+  "date": "2026-11-26"
+}
