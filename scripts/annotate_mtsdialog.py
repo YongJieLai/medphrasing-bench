@@ -110,6 +110,23 @@ def parse_json(raw: str) -> dict | None:
     return None
 
 
+def load_done(out_path: Path) -> set[tuple]:
+    """读取已标注输出，返回已完成的 (dialogue_id, turn_idx) 集合，用于断点续跑。"""
+    done = set()
+    if out_path.exists():
+        with open(out_path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    d = json.loads(line)
+                    done.add((d["dialogue_id"], d["turn_idx"]))
+                except (json.JSONDecodeError, KeyError):
+                    continue
+    return done
+
+
 def annotate(pair: dict, role: str, retries: int = 2) -> dict:
     prompt = PROMPT.format(
         prev=pair.get("prev_patient_utt") or "",
@@ -152,11 +169,20 @@ def main():
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
 
+    # 断点续跑：跳过已标注的 pair，用追加模式续写
+    done = load_done(out)
+    todo = [p for p in q_pairs if (p["dialogue_id"], p["turn_idx"]) not in done]
+    if done:
+        print(f"检测到已有标注 {len(done)} 条，跳过，剩余 {len(todo)} 条待标注")
+    else:
+        print(f"全新标注，共 {len(todo)} 条")
+
     n_ok = 0
     n_fail = 0
     t0 = time.time()
-    with open(out, "w", encoding="utf-8") as f:
-        for i, p in enumerate(q_pairs):
+    mode = "a" if done else "w"
+    with open(out, mode, encoding="utf-8") as f:
+        for i, p in enumerate(todo):
             lab = annotate(p, args.role)
             # 补充规则字段（词数，作披露量交叉验证）
             p["word_count"] = len(p["patient_utt"].split())
@@ -170,7 +196,7 @@ def main():
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
             if (i + 1) % 100 == 0:
                 el = time.time() - t0
-                print(f"  进度 {i+1}/{len(q_pairs)}  ok={n_ok} fail={n_fail}  "
+                print(f"  进度 {i+1}/{len(todo)}  ok={n_ok} fail={n_fail}  "
                       f"{el:.0f}s  ({el/(i+1)*1000:.0f}ms/条)")
 
     print(f"\n完成: {n_ok} ok, {n_fail} fail -> {out}")
