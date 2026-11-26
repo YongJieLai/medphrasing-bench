@@ -220,27 +220,28 @@ def main():
     real_slope = within_dialogue_slope(real_seqs)
     real_rates = empirical_rates(hold_pairs)
 
-    # ---------- 3 维回放（R 次取均值） ----------
-    sim3_totals_mean = defaultdict(list)
+    # ---------- 3 维回放（每次回放算一个患者间方差，R 次取均值） ----------
+    # B1 口径修正：对齐真人「单次观测」。真人方差是「每对话只观测一次」的
+    # 患者间方差；模拟器也应「每次回放算一次患者间方差，再对 R 次取期望」，
+    # 而不是「每对话先 R 次取均值再算方差」（后者丢掉患者内采样噪声，压低分子）。
+    sim3_vars = []
     sim3_slopes = []
     for _ in range(R):
         seqs = replay_3d(sim3, hold_dialogues, truthset, rng)
-        for d, tot in totals(seqs).items():
-            sim3_totals_mean[d].append(tot)
+        sim3_vars.append(float(np.var(list(totals(seqs).values()))))
         sim3_slopes.append(within_dialogue_slope(seqs)["slope"])
-    sim3_totals_mean = {d: float(np.mean(v)) for d, v in sim3_totals_mean.items()}
+    var_sim3 = float(np.mean(sim3_vars))
     sim3_slope = float(np.mean([s for s in sim3_slopes if not np.isnan(s)]))
     sim3_rates = simulated_rates_3d(sim3, hold_dialogues, truthset, rng, R)
 
-    # ---------- 1 维回放（阴性对照） ----------
-    sim1_totals_mean = defaultdict(list)
+    # ---------- 1 维回放（阴性对照，同口径） ----------
+    sim1_vars = []
     sim1_slopes = []
     for _ in range(R):
         seqs = replay_1d(sim1_iu, hold_dialogues, rng)
-        for d, tot in totals(seqs).items():
-            sim1_totals_mean[d].append(tot)
+        sim1_vars.append(float(np.var(list(totals(seqs).values()))))
         sim1_slopes.append(within_dialogue_slope(seqs)["slope"])
-    sim1_totals_mean = {d: float(np.mean(v)) for d, v in sim1_totals_mean.items()}
+    var_sim1 = float(np.mean(sim1_vars))
     sim1_slope = float(np.mean([s for s in sim1_slopes if not np.isnan(s)]))
     sim1_rates = simulated_rates_1d(sim1, hold_dialogues, rng, R)
 
@@ -249,9 +250,8 @@ def main():
         vals = list(d.values())
         return float(np.var(vals))
 
-    var_real = var_of(real_totals)
-    var_sim3 = var_of(sim3_totals_mean)
-    var_sim1 = var_of(sim1_totals_mean)
+    var_real = var_of(real_totals)  # 真人单次观测的患者间方差
+    # var_sim3 / var_sim1 已在回放循环按「单次回放方差」口径算好（对齐单次观测）
     b1_3d = var_sim3 / var_real if var_real > 0 else float("nan")
     b1_1d = var_sim1 / var_real if var_real > 0 else float("nan")
 

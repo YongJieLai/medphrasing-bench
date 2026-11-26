@@ -302,10 +302,38 @@ class ConditionalSimulator:
 
     @staticmethod
     def _deserialize(data: dict) -> dict:
+        """把 _serialize 的输出还原回内存结构（tuple key / int key）。
+
+        修掉「存盘即坏」：JSON 会把 dict 的 int key 变成字符串，读回时不还原，
+        导致 info_units/completeness 的 inner key 对不上 _draw 里的 int 查询
+        （.get(0) 全 miss → 概率全 0 → rng.choice 崩）。同时还原 _meta.cell_n 的
+        tuple key（覆盖边界报告依赖它）。
+        """
+        INT_INNER = {"info_units", "completeness"}  # 这些维度的 y 取值是 int
+
+        def _restore_meta(meta: dict) -> dict:
+            out = {}
+            for k, v in meta.items():
+                if k == "cell_n" and isinstance(v, dict):
+                    out[k] = {}
+                    for dim, cells in v.items():
+                        if isinstance(cells, dict):
+                            out[k][dim] = {
+                                tuple(kk.split("§")): n for kk, n in cells.items()
+                            }
+                        else:
+                            out[k][dim] = cells
+                else:
+                    out[k] = v
+            return out
+
         out = {}
         for k, v in data.items():
-            if k == "_meta" or not isinstance(v, dict):
+            if not isinstance(v, dict):
                 out[k] = v
+                continue
+            if k == "_meta":
+                out[k] = _restore_meta(v)
                 continue
             out[k] = {}
             for kk, p in v.items():
@@ -313,6 +341,8 @@ class ConditionalSimulator:
                 if len(parts) == 3:
                     # 3 维：(x, rbin, tbin) -> {y:p}
                     a, b, c = parts
+                    if k in INT_INNER and isinstance(p, dict):
+                        p = {int(y): prob for y, prob in p.items()}
                     out[k][(a, b, c)] = p
                 elif len(parts) == 2:
                     a, b = parts
