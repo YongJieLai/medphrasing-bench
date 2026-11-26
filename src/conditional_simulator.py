@@ -271,6 +271,9 @@ class ConditionalSimulator:
             # 附和不计披露（§2.2 契约；真实数据 agree 轮 info_units 均值 0.034）
             if deff == "agree":
                 iu = 0
+            # 物理约束（§7.4 第4件）：零披露不可能是"溢出"（真实数据 iu=0 且 spillover = 0.0%）
+            if iu == 0 and rel == "spillover":
+                rel = "on-topic"
             return {
                 "relevance": rel, "definiteness": deff, "completeness": comp,
                 "info_units": int(iu),

@@ -20,6 +20,6 @@
   "seed": 42,
   "bootstrap": 2000,
   "replay_seed": 42,
-  "n_replay_runs": 50,
+  "n_replay_runs": 100,
   "dialogue_baseline": "truth_set_size"
 }

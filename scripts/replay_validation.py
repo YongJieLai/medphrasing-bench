@@ -114,6 +114,9 @@ def replay_1d(sim1: ConditionalSimulator, iu_dist: dict, dialogues: dict,
             iu = _draw_iu(iu_dist[p["openness"]], rng)
             if b["definiteness"] == "agree":
                 iu = 0
+            # 物理约束（§7.4 第4件，与 3 维同口径）
+            if iu == 0 and b["relevance"] == "spillover":
+                b["relevance"] = "on-topic"
             added = ledger.record(iu)
             rec.append(_record(i, p, remaining_before, iu, added,
                                b["relevance"], b["definiteness"], b["completeness"]))
@@ -259,6 +262,38 @@ def c2_stats(records: dict[int, list[dict]]) -> dict:
     }
 
 
+def physical_check(records: dict[int, list[dict]]) -> dict:
+    """体检表（§7.4 第2件）：iu ∈ {0,1,2,3+} 各档占比 + 每轮均值 + 每对话总量均值。
+
+    此前从未报告；零披露率 33.9% vs 19.8% 的 +14pp 就是从这里暴露的。
+    """
+    n = 0
+    bins = {"iu0": 0, "iu1": 0, "iu2": 0, "iu3p": 0}
+    per_turn_sum = 0.0
+    per_dial = []
+    for recs in records.values():
+        for r in recs:
+            n += 1
+            iu = r["raw_iu"]
+            if iu == 0:
+                bins["iu0"] += 1
+            elif iu == 1:
+                bins["iu1"] += 1
+            elif iu == 2:
+                bins["iu2"] += 1
+            else:
+                bins["iu3p"] += 1
+            per_turn_sum += iu
+        per_dial.append(sum(r["added"] for r in recs))
+    return {
+        "n_turns": n,
+        "iu_dist": {k: (bins[k] / n if n else float("nan")) for k in bins},
+        "iu_counts": bins,
+        "per_turn_mean": per_turn_sum / n if n else float("nan"),
+        "per_dialogue_mean": float(np.mean(per_dial)) if per_dial else float("nan"),
+    }
+
+
 # ----------------------------------------------------------------------
 # bootstrap（真实残量斜率，对话级重采样）
 # ----------------------------------------------------------------------
@@ -346,14 +381,15 @@ def main():
     boot = bootstrap_real_slope(real_rec, rem_bins, rng, B)
     print(f"真实斜率 bootstrap 95% CI = [{boot['ci_low']:.4f}, {boot['ci_high']:.4f}] (n={boot['n']})")
 
-    # ---------- 回放（R 次，每次算方差/斜率/三率，再取均值） ----------
+    # ---------- 回放（R 次，每次算方差/斜率/三率/C1/C2/体检表，再取均值） ----------
     def run_replays(replay_fn, sim, extra=None):
         vars_ = []
         slopes = []
         legacy_slopes = []
         rates_acc = {k: [] for k in RATE_KEYS}
-        c1_acc = None
-        c2_acc = None
+        c1_acc = defaultdict(list)    # (dim, layer) -> [rate across R]
+        c2_acc = defaultdict(list)    # key -> [value across R]
+        phys_acc = defaultdict(list)  # key -> [value across R]
         for _ in range(R):
             recs = replay_fn(sim, hold_dialogues, truthset, rng) if extra is None \
                 else replay_fn(sim, extra, hold_dialogues, truthset, rng)
@@ -363,29 +399,51 @@ def main():
             rates = global_rates(recs)
             for k in RATE_KEYS:
                 rates_acc[k].append(rates[k])
+            c1 = c1_layers(recs)
+            for dim in ("spillover_by_openness", "agree_by_leadingness", "incomplete_by_multi"):
+                for layer, v in c1[dim].items():
+                    c1_acc[(dim, layer)].append(v)
+            c2 = c2_stats(recs)
+            for k, v in c2.items():
+                c2_acc[k].append(v)
+            ph = physical_check(recs)
+            for k, v in ph.items():
+                if isinstance(v, dict):
+                    for kk, vv in v.items():
+                        phys_acc[f"{k}.{kk}"].append(vv)
+                else:
+                    phys_acc[k].append(v)
+
+        def mean_nonnan(vals):
+            vals = [v for v in vals if not np.isnan(v)]
+            return float(np.mean(vals)) if vals else float("nan")
+
+        c1_mean = {}
+        for (dim, layer), vs in c1_acc.items():
+            c1_mean.setdefault(dim, {})[layer] = mean_nonnan(vs)
+        c2_mean = {k: mean_nonnan(v) for k, v in c2_acc.items()}
+        phys_mean = {k: mean_nonnan(v) for k, v in phys_acc.items()}
+        # 还原 iu_dist / iu_counts 字典（phys_acc 里被平铺成 "iu_dist.iu0" 这类 key）
+        phys_mean["iu_dist"] = {
+            k: phys_mean.get(f"iu_dist.{k}", float("nan")) for k in ("iu0", "iu1", "iu2", "iu3p")
+        }
+        phys_mean["iu_counts"] = {
+            k: phys_mean.get(f"iu_counts.{k}", 0.0) for k in ("iu0", "iu1", "iu2", "iu3p")
+        }
+
         return {
-            "var": float(np.mean(vars_)),
-            "slope": float(np.mean([s for s in slopes if not np.isnan(s)])) if any(not np.isnan(s) for s in slopes) else float("nan"),
-            "legacy_slope": float(np.mean([s for s in legacy_slopes if not np.isnan(s)])) if any(not np.isnan(s) for s in legacy_slopes) else float("nan"),
-            "rates": {k: float(np.mean(v)) for k, v in rates_acc.items()},
+            "var": mean_nonnan(vars_),
+            "slope": mean_nonnan(slopes),
+            "legacy_slope": mean_nonnan(legacy_slopes),
+            "rates": {k: mean_nonnan(v) for k, v in rates_acc.items()},
+            "c1": c1_mean,
+            "c2": c2_mean,
+            "phys": phys_mean,
         }
 
     sim3_res = run_replays(replay_3d, sim3)
     sim1_res = run_replays(replay_1d, sim1, extra=iu_dist)
     simabl_res = run_replays(replay_3d, sim_abl)
-
-    # C1/C2 的模拟值：单次回放取一次（与 R 无关，取 R 次均值需再跑；此处用一次回放近似，
-    # 因 C1/C2 是分布层面统计，单次已含全量问答对，噪声可忽略）
-    _rng_c1 = np.random.default_rng(seed + 1)
-    sim3_rec_once = replay_3d(sim3, hold_dialogues, truthset, _rng_c1)
-    sim1_rec_once = replay_1d(sim1, iu_dist, hold_dialogues, truthset, _rng_c1)
-    simabl_rec_once = replay_3d(sim_abl, hold_dialogues, truthset, _rng_c1)
-    sim3_c1 = c1_layers(sim3_rec_once)
-    sim1_c1 = c1_layers(sim1_rec_once)
-    simabl_c1 = c1_layers(simabl_rec_once)
-    sim3_c2 = c2_stats(sim3_rec_once)
-    sim1_c2 = c2_stats(sim1_rec_once)
-    simabl_c2 = c2_stats(simabl_rec_once)
 
     # ---------- 判定 ----------
     b1 = {
@@ -424,7 +482,7 @@ def main():
                      "sim1": sim1_res["rates"][k], "simabl": simabl_res["rates"][k],
                      "diff_pp": diff, "pass": diff <= 3.0}
 
-    # C1 分层（每层差 ≤ 5pp；n<30 标低置信不参与判定）
+    # C1 分层（每层差 ≤ 5pp；n<50 标低置信不参与判定，§7.4 第3件）
     c1_layers_out = {
         "spillover_by_openness": {},
         "agree_by_leadingness": {},
@@ -438,9 +496,10 @@ def main():
         for layer in real_c1[dim]:
             n = real_c1[layers_key].get(layer, 0)
             real_v = real_c1[dim][layer]
-            sim3_v = sim3_c1[dim].get(layer, float("nan"))
+            sim3_v = sim3_res["c1"][dim].get(layer, float("nan"))
             diff = (sim3_v - real_v) * 100
-            low_conf = n < 30
+            # 抽样噪声 SE = sqrt(p(1-p)/n)；n<50 时 SE > 5pp（最坏 p=0.5 时 SE≈7pp），判据精度不足
+            low_conf = n < 50
             c1_layers_out[dim][layer] = {
                 "n": n, "real": real_v, "sim3": sim3_v,
                 "diff_pp": diff, "low_conf": low_conf,
@@ -450,11 +509,11 @@ def main():
     # C2（判据对象见 note；主控字面口径 = iu0 且 completeness=1 ≤ 2%，
     # 但真实数据里该组合就占 17.3%，判据本身与数据矛盾——见结果文档）
     c2_out = {
-        "real": real_c2, "sim3": sim3_c2, "sim1": sim1_c2, "simabl": simabl_c2,
-        "pass_sim3_literal": sim3_c2["ratio_iu0_complete"] <= 0.02,
-        "pass_sim3_spill_2pct": sim3_c2["ratio_iu0_spill"] <= 0.02,
+        "real": real_c2, "sim3": sim3_res["c2"], "sim1": sim1_res["c2"], "simabl": simabl_res["c2"],
+        "pass_sim3_literal": sim3_res["c2"]["ratio_iu0_complete"] <= 0.02,
+        "pass_sim3_spill_2pct": sim3_res["c2"]["ratio_iu0_spill"] <= 0.02,
         "note": "主控字面口径=iu0且completeness=1≤2%（真实即17.3%，无意义）；"
-                "数据揭示真·不可能组合=iu0且relevance=spillover（真实0.0%）",
+                "数据揭示真·不可能组合=iu0且relevance=spillover（真实0.0%，§7.4第4件已加物理约束）",
     }
 
     # ---------- 覆盖边界：remaining 各档 n ----------
@@ -462,6 +521,21 @@ def main():
     for s in train_samples:
         bname = _bin_of(int(s["remaining"]), rem_bins)
         rem_n[bname] = rem_n.get(bname, 0) + 1
+
+    # ---------- 体检表（§7.4 第2件） ----------
+    phys_real = physical_check(real_rec)
+    phys_check = {}
+    for k, label in [("iu0", "iu0"), ("iu1", "iu1"), ("iu2", "iu2"), ("iu3p", "iu3+")]:
+        diff = (sim3_res["phys"]["iu_dist"][k] - phys_real["iu_dist"][k]) * 100
+        phys_check[f"diff_{label}_pp"] = diff
+        phys_check[f"pass_{label}"] = abs(diff) <= 5.0
+    mt_diff = sim3_res["phys"]["per_turn_mean"] - phys_real["per_turn_mean"]
+    phys_check["diff_per_turn_mean"] = mt_diff
+    phys_check["pass_per_turn_mean"] = abs(mt_diff) <= 0.3
+    phys_check["diff_per_dialogue_mean"] = \
+        sim3_res["phys"]["per_dialogue_mean"] - phys_real["per_dialogue_mean"]
+    phys_pass = all(phys_check[f"pass_{k}"] for k in ("iu0", "iu1", "iu2", "iu3p")) \
+        and phys_check["pass_per_turn_mean"]
 
     # ---------- 输出 ----------
     outdir = Path(args.out)
@@ -474,6 +548,14 @@ def main():
         "A_group": a_pass,
         "C1": c1_layers_out,
         "C2": c2_out,
+        "physical_check": {
+            "real": phys_real,
+            "sim3": sim3_res["phys"],
+            "sim1": sim1_res["phys"],
+            "simabl": simabl_res["phys"],
+            "checks": phys_check,
+            "pass": phys_pass,
+        },
         "coverage": {"remaining_bin_n": rem_n, "note": "remaining 各档样本量（训练集序贯样本）"},
         "negative_control": {
             "abl_B2_fails": not b2["check_abl"]["pass"],
@@ -523,15 +605,32 @@ def main():
                   f"3维 {v['sim3']*100:5.2f}%  差 {v['diff_pp']:5.2f}pp  {flag}")
 
     print("\n" + "=" * 78)
-    print("C2 联合一致性（iu==0 轮次的组合分布）")
+    print("C2 联合一致性（iu==0 轮次的组合分布，R 次均值）")
     print("=" * 78)
-    for name, st in [("真实", real_c2), ("3维", sim3_c2), ("消融", simabl_c2), ("1维", sim1_c2)]:
-        print(f"  {name:4s}: iu0={st['n_iu0']:5d}  P(complete|iu0)={st['p_complete_given_iu0']*100:5.2f}%  "
+    for name, st in [("真实", real_c2), ("3维", c2_out["sim3"]), ("消融", c2_out["simabl"]), ("1维", c2_out["sim1"])]:
+        print(f"  {name:4s}: iu0≈{st['n_iu0']:.0f}  P(complete|iu0)={st['p_complete_given_iu0']*100:5.2f}%  "
               f"P(spill|iu0)={st['p_spill_given_iu0']*100:5.2f}%  P(offtopic|iu0)={st['p_offtopic_given_iu0']*100:5.2f}%")
         print(f"        占全部轮次: iu0+complete={st['ratio_iu0_complete']*100:.2f}%  "
               f"iu0+spill={st['ratio_iu0_spill']*100:.2f}%  iu0+offtopic={st['ratio_iu0_offtopic']*100:.2f}%")
     print(f"  C2 判定(字面口径 iu0+complete≤2%): {'✅' if c2_out['pass_sim3_literal'] else '❌(真实即17.3%)'}")
     print(f"  C2 判定(数据口径 iu0+spill≤2%):  {'✅' if c2_out['pass_sim3_spill_2pct'] else '❌'}")
+
+    print("\n" + "=" * 78)
+    print("体检表（§7.4 第2件）：iu ∈ {0,1,2,3+} 各档占比 + 每轮均值 + 每对话总量")
+    print("=" * 78)
+    for name, ph in [("真实", phys_real), ("3维", sim3_res["phys"]), ("消融", simabl_res["phys"]), ("1维", sim1_res["phys"])]:
+        d = ph["iu_dist"]
+        print(f"  {name:4s}: iu0={d['iu0']*100:5.1f}%  iu1={d['iu1']*100:5.1f}%  iu2={d['iu2']*100:5.1f}%  "
+              f"iu3+={d['iu3p']*100:5.1f}%  | 每轮均值={ph['per_turn_mean']:.2f}  每对话总量={ph['per_dialogue_mean']:.2f}")
+    d3 = sim3_res["phys"]["iu_dist"]
+    print("  体检表判据（每档差≤5pp、每轮均值差≤0.3）：")
+    for k, label in [("iu0", "iu0"), ("iu1", "iu1"), ("iu2", "iu2"), ("iu3p", "iu3+")]:
+        diff = (d3[k] - phys_real["iu_dist"][k]) * 100
+        print(f"    {label:4s}: 真实 {phys_real['iu_dist'][k]*100:5.1f}%  3维 {d3[k]*100:5.1f}%  差 {diff:5.1f}pp  "
+              f"{'✅' if abs(diff)<=5 else '❌'}")
+    mt_diff = sim3_res["phys"]["per_turn_mean"] - phys_real["per_turn_mean"]
+    print(f"    每轮均值: 真实 {phys_real['per_turn_mean']:.2f}  3维 {sim3_res['phys']['per_turn_mean']:.2f}  "
+          f"差 {mt_diff:.2f}  {'✅' if abs(mt_diff)<=0.3 else '❌'}")
 
     print("\n" + "=" * 78)
     print("覆盖边界：remaining 各档样本量（训练集）")
@@ -549,10 +648,11 @@ def main():
     c1_pass = all(v["pass"] for layers in c1_layers_out.values() for v in layers.values())
     c2_pass = c2_out["pass_sim3_spill_2pct"]  # 用数据口径（见 note）
     a_pass_all = all(a_pass[k]["pass"] for k in RATE_KEYS)
-    print("\n>>> M2b-1 判定：")
+    print("\n>>> M2b-1b 判定（含体检表）：")
     print(f"    B1 {'✅' if b1_pass else '❌'}  B2 {'✅' if b2_pass else '❌'}  "
           f"C1 {'✅' if c1_pass else '❌'}  C2 {'✅' if c2_pass else '❌'}  "
-          f"A组 {'✅' if a_pass_all else '❌'}  消融失败 {'✅' if result['negative_control']['abl_B2_fails'] else '❌'}")
+          f"A组 {'✅' if a_pass_all else '❌'}  体检表 {'✅' if phys_pass else '❌'}  "
+          f"消融失败 {'✅' if result['negative_control']['abl_B2_fails'] else '❌'}")
 
     (outdir / "config.json").write_text(
         json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8")
