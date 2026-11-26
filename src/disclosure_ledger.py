@@ -63,3 +63,48 @@ class DisclosureLedger:
             "D_d": self.disclosed,
             "T_d_minus_D_d": self.remaining(),
         }
+
+
+class AiuLedger:
+    """AIU 文本集版双状态账本（M2c 用，记录具体事实内容）。
+
+    区别于 DisclosureLedger 的计数版：本类记录「哪几件事」已披露，供 M2c 的
+    内容选择器从 T_d \\ D_d 中取具体 AIU 文本，以及 M2d 的 B4 内容正确性判据。
+    """
+
+    def __init__(self, truth_set: list[dict]):
+        # truth_set: [{"text": ..., "fidelity": ...}, ...]，顺序即真值集内部序
+        self.truth_set = list(truth_set)
+        self._disclosed: set[int] = set()  # 已披露 AIU 的索引
+
+    def remaining_aius(self) -> list[tuple[int, dict]]:
+        """返回尚未披露的 AIU 及其索引（保持真值集顺序）。"""
+        return [(i, a) for i, a in enumerate(self.truth_set) if i not in self._disclosed]
+
+    def remaining_count(self) -> int:
+        return len(self.truth_set) - len(self._disclosed)
+
+    def record_indices(self, indices) -> int:
+        """把给定索引的 AIU 入账，返回实际新入账数（忽略已入账/越界）。"""
+        added = 0
+        for i in indices:
+            i = int(i)
+            if 0 <= i < len(self.truth_set) and i not in self._disclosed:
+                self._disclosed.add(i)
+                added += 1
+        return added
+
+    @property
+    def t_size(self) -> int:
+        return len(self.truth_set)
+
+    @property
+    def d_size(self) -> int:
+        return len(self._disclosed)
+
+    def snapshot(self) -> dict:
+        return {
+            "T_d": len(self.truth_set),
+            "D_d": len(self._disclosed),
+            "T_d_minus_D_d": self.remaining_count(),
+        }

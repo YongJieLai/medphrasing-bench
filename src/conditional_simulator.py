@@ -242,9 +242,19 @@ class ConditionalSimulator:
     # 采样
     # =====================================================================
     def _draw(self, table: dict, key, y_vals: tuple, rng: np.random.Generator):
-        """从给定 key 的条件分布抽一个 y。key 不存在则用等权边际 fallback。"""
+        """从给定 key 的条件分布抽一个 y。
+
+        未知 key 一律抛 ValueError（§7.6 M2c 第 0 件）：不得退回等权随机。
+        等权 fallback 会把非法取值（如 leadingness="none"）静默变成「沉默过多的坏模型」，
+        让整批实验变噪声而不自知（§7.2.5 记录五）。
+        """
         if key not in table:
-            return y_vals[int(rng.integers(0, len(y_vals)))]
+            xs = sorted({k[0] for k in table if isinstance(k, tuple) and len(k) >= 1})
+            raise ValueError(
+                f"_draw 遇到未知 key {key!r}。该条件表已知的取值(第一元素)为 {xs}。\n"
+                f"措辞标签必须来自合法集合——"
+                f"openness={OPENNESS}, leadingness={LEADINGNESS}, multi_barreled={MULTI_BARRELED}。"
+            )
         ps = np.asarray([table[key].get(y, 0.0) for y in y_vals], dtype=float)
         ps = ps / ps.sum()
         return y_vals[int(rng.choice(len(y_vals), p=ps))]
@@ -290,8 +300,11 @@ class ConditionalSimulator:
 
         # 1 维模式（阴性对照）
         def draw_1d(table, x, y_vals):
-            if x not in [k[0] for k in table]:
-                return y_vals[int(rng.integers(0, len(y_vals)))]
+            known = {k[0] for k in table}
+            if x not in known:
+                raise ValueError(
+                    f"draw_1d 遇到未知取值 {x!r}。该条件表已知取值为 {sorted(known)}。"
+                )
             ps = np.asarray([table.get((x, y), 0.0) for y in y_vals], dtype=float)
             ps = ps / ps.sum()
             return y_vals[int(rng.choice(len(y_vals), p=ps))]
