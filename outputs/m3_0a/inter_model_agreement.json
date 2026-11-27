@@ -1,0 +1,43 @@
+{
+  "openness": {
+    "agree": 93,
+    "total": 99,
+    "rate": 0.9393939393939394,
+    "confusions": {
+      "semi->closed": 3,
+      "closed->semi": 1,
+      "semi->open": 1,
+      "closed->open": 1
+    }
+  },
+  "leadingness": {
+    "agree": 78,
+    "total": 99,
+    "rate": 0.7878787878787878,
+    "confusions": {
+      "strong->neutral": 7,
+      "mild->neutral": 7,
+      "strong->mild": 5,
+      "neutral->mild": 2
+    }
+  },
+  "multi_barreled": {
+    "agree": 83,
+    "total": 99,
+    "rate": 0.8383838383838383,
+    "confusions": {
+      "single->multi": 16
+    }
+  },
+  "follow_up": {
+    "agree": 43,
+    "total": 99,
+    "rate": 0.43434343434343436,
+    "confusions": {
+      "surface->new": 27,
+      "deepen->new": 24,
+      "surface->deepen": 4,
+      "surface->n/a": 1
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "holdout_dialogues": 270,
+  "holdout_turns": 1011,
+  "pool_counts": {
+    "strong": 32,
+    "multi": 65,
+    "surface": 66,
+    "rest": 855
+  },
+  "eval_n": 100,
+  "coverage": {
+    "strong": 30,
+    "multi": 31,
+    "surface": 32
+  }
+}
