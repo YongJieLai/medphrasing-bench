@@ -24,7 +24,7 @@ NO_CONTENT_REPLIES = ("嗯，就这些情况", "哦，也没什么要补充的",
 
 DEFINITENESS_HINT = {
     "exact": "语气明确、肯定，直接陈述。",
-    "vague": "语气含糊、不确定，可用「可能」「大概」「有点」「说不好」这类词，不要说得斩钉截铁。",
+    "vague": "语气含糊、不确定，可用「可能」「大概」「有点」「说不好」这类词。注意：含糊只用于肯定/可能的事实；否定的事实（如「没有过敏史」）必须说成明确的「没有」，不得含糊成「大概没有」。",
 }
 
 RELEVANCE_HINT = {
@@ -48,20 +48,34 @@ RENDER_SYSTEM = """你是模拟医患问诊对话中的患者。请按下面的�
 - {relevance_hint}
 - {completeness_hint}
 
+【硬规则——否定事实】
+事实清单里凡标注「否定地说 / 明确否定」的事实（如「no fever」「no hypertension」），
+是患者【明确否认】的事实，必须说成斩钉截铁的「没有 / 不是」，例如「没有发烧」「没有高血压」。
+即使「说话方式」要求语气含糊，也【绝不】把否定事实含糊成「大概没有 / 说不好有没有 / 可能没有」。
+含糊语气只用于肯定或可能的事实，不用于否定事实。
+
 只输出患者的一句话（中文，第一人称，自然简短）。务必只说出【你本轮必须说的事实】里列出的内容，不要补充清单外的任何事实（包括「其他也没有」「别的都正常」这类额外收尾）。不要输出任何解释、标签、引号或格式。"""
 
 
-def _facts_block(facts: list[dict]) -> str:
+def _facts_block(facts: list[dict], definiteness: str = "exact") -> str:
+    """把事实清单渲染成 prompt 里的编号列表，每条附「怎么说」的语气前缀。
+
+    M2c-b（§7.7 第 3 件）修 vague：`definiteness=vague` 只作用于
+    `fidelity ∈ {definite, fuzzy}` 的事实；`fidelity=denied` 的事实始终明确否定，
+    不得被含糊成「大概没有」（那是语义错误）。
+    """
     if not facts:
         return "（本轮无新增事实）"
+    vague = definiteness == "vague"
     lines = []
     for i, a in enumerate(facts, 1):
         fidelity = a.get("fidelity", "definite")
-        prefix = {
-            "definite": "",
-            "fuzzy": "（语气含糊地说）",
-            "denied": "（否定地说）",
-        }.get(fidelity, "")
+        if fidelity == "denied":
+            prefix = "（明确否定地说：必须说成明确的「没有/不是」，严禁「可能/大概/说不好」）"
+        elif vague:
+            prefix = "（语气含糊地说）"
+        else:
+            prefix = "（语气含糊地说）" if fidelity == "fuzzy" else ""
         lines.append(f"{i}. {a['text']} {prefix}".rstrip())
     return "\n".join(lines)
 
@@ -99,7 +113,7 @@ def render_turn(doctor_utt: str, prev_patient: str | None, instruction: dict,
 
     prompt = RENDER_SYSTEM.format(
         doctor=doctor_utt,
-        facts=_facts_block(must_say),
+        facts=_facts_block(must_say, definiteness=definiteness),
         definiteness_hint=DEFINITENESS_HINT[definiteness],
         relevance_hint=RELEVANCE_HINT.get(relevance, RELEVANCE_HINT["on-topic"]),
         completeness_hint=completeness_hint,
